@@ -64,9 +64,10 @@ class AppView extends View
             [ 'block' => 'css' ]
         );
 
-        // Lato font
+        // Proxima Nova Font
         $this->Html->css(
-            'https://fonts.googleapis.com/css?family=Roboto:400,500,700',
+        	$this->Url->assetUrl('BackOffice.font/proxima-nova/fonts.css'),
+            /*'https://fonts.googleapis.com/css?family=Roboto:400,500,700',*/
             [ 'block' => 'css' ]
         );
 
