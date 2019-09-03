@@ -13,10 +13,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col sidebar">
-                <?= $this->element('sidebar'); ?>
+                <?= $this->element('BackOffice.sidebar'); ?>
             </div>
             <div class="col content">
-                <?= $this->element('header'); ?>
+                <?= $this->element('BackOffice.header'); ?>
                 <div class="container" style="margin: 0">
                     <div class="row">
                         <div class="col">
