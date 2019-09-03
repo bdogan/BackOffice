@@ -1,3 +1,9 @@
+<?php
+
+  use Cake\Core\Configure;
+
+  $sidebarMenu = Configure::read('BackOffice.map.sidebar_menu');
+?>
 <ul class="wrapper">
     <li class="user">
         <div class="avatar">U</div>
@@ -15,9 +21,11 @@
             </div>
         </div>
     </li>
-    <li class="menu-item">
-        <a href="#" class="active"><i class="material-icons-round">home</i>Dashboard</a>
-    </li>
+    <?php foreach ($sidebarMenu as $name => $item) { ?>
+      <li class="menu-item">
+          <a href="#" class="active"><i class="material-icons-round"><?=$item['icon']?></i><?=$item['title']?></a>
+      </li>
+    <?php } ?>
     <li class="menu-item">
         <a href="#" class=""><i class="material-icons-round">local_pharmacy</i>Eczaneler</a>
     </li>
