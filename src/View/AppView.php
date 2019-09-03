@@ -64,11 +64,6 @@ class AppView extends View
             [ 'block' => 'css' ]
         );
 
-        // Lato font
-        $this->Html->css(
-            'https://fonts.googleapis.com/css?family=Roboto:400,500,700',
-            [ 'block' => 'css' ]
-        );
 
         // Application assets
         $this->Html->script('BackOffice.app', [ 'block' => 'script' ]);
