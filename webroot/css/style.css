@@ -199,6 +199,16 @@ header .br h3 {
     color: var(--default-text-color);
 }
 
+/** Login **/
+.__login {
+    margin-top: 3rem;
+}
+@media (max-height: 650px) {
+    .__login {
+        margin-top: 1rem;
+    }
+}
+
 /** Material icons setup **/
 
 /* Rules for sizing the icon. */

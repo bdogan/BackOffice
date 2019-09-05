@@ -3,21 +3,42 @@
 namespace BackOffice\Controller;
 
 use Cake\Controller\Controller;
-use Cake\Event\Event;
+use Cake\Core\Configure;
 
 class AppController extends Controller
 {
-    /**
-     * Before Filter
-     *
-     * @param Event $event
-     *
-     * @return \Cake\Http\Response|null
-     */
-    public function beforeFilter( Event $event )
-    {
-        // Set view class
-        $this->viewBuilder()->setClassName('BackOffice.App');
-    }
+	/**
+	 * App Controller initialize
+	 *
+	 * @throws \Exception
+	 */
+	public function initialize()
+	{
+		// Set view class
+		$this->viewBuilder()->setClassName('BackOffice.App');
+
+		// FlashComponent
+		$this->loadComponent('Flash', [ 'plugin' => 'BackOffice' ]);
+
+		// CsrfComponent
+		$this->loadComponent('Csrf');
+
+		// AuthComponent
+		if (Configure::check('BackOffice.auth')) {
+			$this->loadComponent('Auth', [
+				'authenticate' => Configure::readOrFail('BackOffice.auth.authenticate'),
+				'loginAction' => Configure::read('BackOffice.auth.loginAction'),
+				'logoutAction' => Configure::read('BackOffice.auth.logoutAction'),
+				'loginRedirect' => Configure::read('BackOffice.auth.loginRedirect'),
+				'flash' => [
+					'plugin' => 'BackOffice',
+					'params' => [
+						'class' => 'danger'
+					]
+				],
+				'storage' => Configure::read('BackOffice.auth.storage', 'session')
+			]);
+		}
+	}
 
 }

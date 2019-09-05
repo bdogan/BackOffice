@@ -2,13 +2,14 @@
 
   use Cake\Core\Configure;
 
-  $sidebarMenu = Configure::read('BackOffice.map.sidebar_menu');
+  $sidebarMenu = Configure::read('BackOffice.menu.sidebar', []);
+
 ?>
 <ul class="wrapper">
     <li class="user">
-        <div class="avatar">U</div>
+        <div class="avatar"><?= strtoupper(substr($this->Session->read('Auth.User.name'), 0, 1)) ?></div>
         <div class="title">
-            Uğur Eskici <br />
+            <?= $this->Session->read('Auth.User.name') ?> <br />
             Sistem Yöneticisi
         </div>
         <div class="btn-group dropright">
@@ -16,8 +17,7 @@
                 <i class="material-icons-round">settings_applications</i>
             </button>
             <div class="dropdown-menu" aria-labelledby="user-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
+                <?= $this->Html->link(__('Çıkış'), Configure::read('BackOffice.auth.logoutAction'), [ 'class' => 'dropdown-item' ]) ?>
             </div>
         </div>
     </li>

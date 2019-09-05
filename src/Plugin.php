@@ -4,6 +4,7 @@ namespace BackOffice;
 
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
 use Cake\Utility\Hash;
@@ -13,19 +14,20 @@ use Cake\Utility\Hash;
  */
 class Plugin extends BasePlugin
 {
+
 	/**
-	 * Map
+	 * Target plugin
+	 *
+	 * @var BasePlugin
+	 */
+	private $plugin;
+
+	/**
+	 * Config
 	 *
 	 * @var array
 	 */
-	private $map = [];
-
-	/**
-	 * Target Plugin name
-	 *
-	 * @var string
-	 */
-	private $targetPlugin = 'ControlPanel';
+	private $config = [];
 
 	/**
 	 * Plugin constructor.
@@ -36,20 +38,18 @@ class Plugin extends BasePlugin
 		// Parent call
 		parent::__construct($config);
 
-		// Set map
-		Configure::write('BackOffice.map', $this->map = $config['map']);
+		// Set target plugin
+		$this->plugin = $config['plugin'];
 
-	}
+		// Load config file
+		if ($config['config']) {
+			$configLoader = new PhpConfig();
+			$this->config = $configLoader->read($this->plugin->name . '.backoffice');
+		}
 
-	/**
-	 * @param $key
-	 * @param null $default
-	 *
-	 * @return mixed
-	 */
-	public function getMapValue($key, $default = null)
-	{
-		return Hash::get($this->map, $key, $default);
+		// Set config
+		Configure::write('BackOffice', $this->config);
+
 	}
 
 	/**
@@ -68,16 +68,19 @@ class Plugin extends BasePlugin
 	 */
 	public function routes( $routes ) {
 		// Get route config
-		$routeConfig = $this->getMapValue('routes');
+		$routeConfig = Configure::read('BackOffice.routes', []);
 
 		// Config plugin routes
 		$routes->plugin(
-			$this->targetPlugin,
-			[ 'path' => $this->getMapValue('rootPath') ],
+			$this->plugin->getName(),
+			[ 'path' => Configure::readOrFail('BackOffice.rootPath') ],
 			function(RouteBuilder $routes) use ($routeConfig) {
 				foreach ($routeConfig as $name => $config)
 				{
-					$routes->{$config['method']}($config['template'], $config['target'], $name);
+					$methods = (array) $config['method'];
+					foreach ($methods as $method) {
+						$routes->{$method === 'all' ? 'connect' : $method}($config['template'], $config['action'], $method === 'get' ? $name : null);
+					}
 				}
 			}
 		);
