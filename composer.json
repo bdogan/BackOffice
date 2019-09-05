@@ -1,5 +1,5 @@
 {
-    "name": "bdogan/BackOffice",
+    "name": "bdogan/back-office",
     "description": "BackOffice plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
