@@ -6,7 +6,7 @@ BackOffice plugin gives a toolbox for developing ControlPanel who using CakePHP.
   * Layouts
   * Elements
   * Flash Messages
-  * Builtin Pages (Login)
+  * Builtin Useful Pages (Login, Logout etc..)
 * Common Entities
   * User
   * UserGroup
