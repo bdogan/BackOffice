@@ -57,7 +57,7 @@ class AuthController extends AppController
 	 */
 	public function login() {
 		if ($this->Auth->user()) { // Check already logged in
-			return $this->redirect($this->Auth->redirectUrl($this->mainPage));
+			return $this->redirect($this->Auth->redirectUrl());
 		}
 		if ($this->request->is('post')) { // Check Request is post
 			$user = $this->Auth->identify(); // Identify user
