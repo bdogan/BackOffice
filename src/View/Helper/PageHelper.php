@@ -2,6 +2,7 @@
 
 namespace BackOffice\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\View\Helper;
 
 /**
@@ -30,11 +31,11 @@ class PageHelper extends Helper
      * Adds new crumb
      *
      * @param $title
-     * @param null $link
+     * @param null $action
      * @param null $options
      */
-    public function addCrumb($title, $link = null, $options = array()) {
-        $this->crumbs[] = compact('title', 'link', 'options');
+    public function addCrumb($title, $action = null, $options = array()) {
+        $this->crumbs[] = compact('title', 'action', 'options');
     }
 
     /**
@@ -43,7 +44,16 @@ class PageHelper extends Helper
      * @return array
      */
     public function getCrumbs() {
-        return $this->crumbs;
+    	if (!isset($this->crumbs['main_page']) && Configure::check('BackOffice.routes.main_page.action')) {
+		    $this->crumbs = array_merge([
+		    	'main_page' => [
+				    'title' => __('Main Page'),
+				    'action' => Configure::read('BackOffice.routes.main_page.action'),
+				    'options' => []
+			    ]
+		    ], $this->crumbs);
+	    }
+    	return $this->crumbs;
     }
 
 }

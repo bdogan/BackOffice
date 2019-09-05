@@ -10,6 +10,7 @@ use Cake\ORM\Entity;
  * @property string $name
  * @property string $email
  * @property string $password
+ * @property string $role
  * @property string|null $last_login_ip
  * @property \Cake\I18n\FrozenTime|null $last_login
  * @property \Cake\I18n\FrozenTime|null $created
@@ -33,7 +34,8 @@ class User extends Entity
         'last_login_ip' => true,
         'last_login' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+	    'role' => true
     ];
 
     /**

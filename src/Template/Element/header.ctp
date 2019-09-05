@@ -9,7 +9,7 @@
         <?php if ($prevCrumb) { ?>
             <div class="row">
                 <div class="col">
-                    <?= $this->Html->link($this->Html->tag('i', 'arrow_back_ios', [ 'class' => 'material-icons-round md-16' ]) . $prevCrumb['title'], $prevCrumb['link'], $prevCrumb['options'] + [ 'escape' => false ]); ?>
+                    <?= $this->Html->link($this->Html->tag('i', 'arrow_back_ios', [ 'class' => 'material-icons-round md-16' ]) . $prevCrumb['title'], $prevCrumb['action'], $prevCrumb['options'] + [ 'escape' => false ]); ?>
                 </div>
             </div>
         <?php } ?>
@@ -18,6 +18,9 @@
                 <h3 class="col"><?= $currentCrumb['title'] ?></h3>
             </div>
         <?php } ?>
+            <div class="row">
+                <div class="col"><div class="line"></div></div>
+            </div>
     </div>
     <?= $this->Flash->render() ?>
 </header>

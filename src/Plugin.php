@@ -7,7 +7,6 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
-use Cake\Utility\Hash;
 
 /**
  * Plugin for BackOffice
@@ -57,8 +56,10 @@ class Plugin extends BasePlugin
 	 *
 	 * @param PluginApplicationInterface $app
 	 */
-	public function bootstrap( PluginApplicationInterface $app ) {
-
+	public function bootstrap( PluginApplicationInterface $app )
+	{
+		// Parent call
+		parent::bootstrap($app);
 	}
 
 	/**
@@ -66,7 +67,8 @@ class Plugin extends BasePlugin
 	 *
 	 * @param $routes RouteBuilder
 	 */
-	public function routes( $routes ) {
+	public function routes( $routes )
+	{
 		// Get route config
 		$routeConfig = Configure::read('BackOffice.routes', []);
 

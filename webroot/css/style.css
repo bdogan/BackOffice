@@ -168,7 +168,7 @@ body {
 /** Header **/
 
 header {
-    margin-bottom: 10px;
+
 }
 
 /** Breadcrumb **/
@@ -199,6 +199,11 @@ header .br h3 {
     color: var(--default-text-color);
 }
 
+header .br .line {
+    margin-top: 5px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
 /** Login **/
 .__login {
     margin-top: 3rem;
@@ -207,6 +212,26 @@ header .br h3 {
     .__login {
         margin-top: 1rem;
     }
+}
+
+/** Form Sections **/
+.form_section {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+}
+
+.form_section::before {
+    display: block;
+    content: ' ';
+    width: calc(100% - 30px);
+    margin-left: 15px;
+    border-bottom: 1px solid #DEDEDE;
+    margin-bottom: 40px;
+}
+
+.form_section:first-child::before {
+    display: none;
 }
 
 /** Material icons setup **/

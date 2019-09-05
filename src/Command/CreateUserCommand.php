@@ -3,6 +3,7 @@ namespace BackOffice\Command;
 
 use BackOffice\Model\Entity\User;
 use BackOffice\Model\Table\UsersTable;
+use BackOffice\Type\UserRole;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Console\Arguments;
 use Cake\Console\Command;
@@ -46,6 +47,10 @@ class CreateUserCommand extends Command
 			->addArgument('password', [
 				'help' => 'User password',
 				'required' => false
+			])
+			->addOption('role', [
+				'help' => 'User role admin, user',
+				'required' => false
 			]);
         return $parser;
     }
@@ -75,7 +80,7 @@ class CreateUserCommand extends Command
 		$user->name = $args->getArgument('name');
     	$user->email = $args->getArgument('email');
     	$user->password = $hasher->hash($password);
-
+    	$user->role = $args->hasOption('role') ? $args->getOption('role') : UserRole::ADMIN[0];
 
     	// Save user
     	$this->Users->saveOrFail($user);
