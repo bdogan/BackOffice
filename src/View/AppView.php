@@ -26,16 +26,11 @@ class AppView extends View
         // Load assets
         $this->loadAssets();
 
-        // Load helpers
+        // Load Page Helper
         $this->loadHelper('BackOffice.Page');
 
-        $this->loadHelper('Form', [
-        	'templates' => [
-		        'inputContainer' => '<div class="{{class}} {{type}}{{required}}">{{content}}</div>',
-		        'inputContainerError' => '<div class="{{class}} {{type}}{{required}} error">{{content}}{{error}}</div>',
-
-	        ]
-        ]);
+        // Load Form Helper
+        $this->loadHelper('BackOffice.Form');
 
     }
 
