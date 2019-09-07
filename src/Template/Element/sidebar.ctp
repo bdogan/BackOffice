@@ -7,10 +7,10 @@
 ?>
 <ul class="wrapper">
     <li class="user">
-        <div class="avatar"><?= strtoupper(substr($this->Session->read('Auth.User.name'), 0, 1)) ?></div>
+        <div class="avatar"><?= strtoupper(substr($this->request->getSession()->read('Auth.User.name'), 0, 1)) ?></div>
         <div class="title">
-            <?= $this->Session->read('Auth.User.name') ?> <br />
-            <?= __(\BackOffice\Type\UserRole::getTitle($this->Session->read('Auth.User.role'))) ?>
+            <?= $this->request->getSession()->read('Auth.User.name') ?> <br />
+            <?= __(\BackOffice\Type\UserRole::getTitle($this->request->getSession()->read('Auth.User.role'))) ?>
         </div>
         <div class="btn-group dropright">
             <button class="dropdown-toggle" data-toggle="dropdown" id="user-menu">
