@@ -1,6 +1,7 @@
 <?php
 namespace BackOffice\Model\Table;
 
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -64,7 +65,7 @@ class UsersTable extends Table
 
         $validator
             ->scalar('password')
-            ->maxLength('password', 255)
+	        ->lengthBetween('password', [ 8, 20 ])
             ->requirePresence('password', 'create')
             ->notEmptyString('password');
 
@@ -78,6 +79,43 @@ class UsersTable extends Table
             ->allowEmptyDateTime('last_login');
 
         return $validator;
+    }
+
+	/**
+	 * Password change validation
+	 *
+	 * @param \Cake\Validation\Validator $validator
+	 *
+	 * @return \Cake\Validation\Validator
+	 */
+    public function validationChangePassword(Validator $validator) {
+
+	    $validator
+		    ->scalar('old_password')
+		    ->requirePresence('old_password')
+		    ->notEmptyString('old_password')
+		    ->add('old_password', 'custom', [
+			    'rule' => function($value, $context) {
+				    $hasher = new DefaultPasswordHasher();
+				    return $hasher->check($value, $context['data']['password']);
+			    },
+			    'message' => 'Wrong password'
+		    ]);
+
+	    $validator
+		    ->scalar('new_password')
+		    ->lengthBetween('new_password', [ 8, 20 ])
+		    ->requirePresence('new_password')
+		    ->notEmptyString('new_password');
+
+	    $validator
+		    ->scalar('new_password_verify')
+		    ->equalToField('new_password_verify', 'new_password')
+		    ->requirePresence('new_password_verify')
+		    ->notEmptyString('new_password_verify');
+
+	    return $validator;
+
     }
 
     /**

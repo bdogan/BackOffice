@@ -31,7 +31,9 @@ class AppView extends View
 
         $this->loadHelper('Form', [
         	'templates' => [
-        	    'inputContainer' => '{{content}}'
+		        'inputContainer' => '<div class="{{class}} {{type}}{{required}}">{{content}}</div>',
+		        'inputContainerError' => '<div class="{{class}} {{type}}{{required}} error">{{content}}{{error}}</div>',
+
 	        ]
         ]);
 

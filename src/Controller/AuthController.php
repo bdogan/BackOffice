@@ -65,7 +65,7 @@ class AuthController extends AppController
 				$this->Auth->setUser($user); // Save user
 				return $this->redirect($this->Auth->redirectUrl());
 			} else {
-				$this->Flash->error(__('Email or password is incorrect'), [ 'plugin' => 'BackOffice' ]);
+				$this->Flash->error(__('Email or password is incorrect'));
 			}
 		}
 		// Set email to login

@@ -69,14 +69,11 @@ class CreateUserCommand extends Command
 		    $password = Security::randomString(8);
 	    }
 
-    	// Password hasher
-    	$hasher = new DefaultPasswordHasher();
-
     	// Create user entity
 		$user = new User();
 		$user->name = $args->getArgument('name');
     	$user->email = $args->getArgument('email');
-    	$user->password = $hasher->hash($password);
+    	$user->password = $password;
     	$user->role = $args->hasOption('role') ? $args->getOption('role') : UserRole::ADMIN[0];
 
     	// Save user

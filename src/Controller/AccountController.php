@@ -1,15 +1,15 @@
 <?php
 namespace BackOffice\Controller;
 
-use BackOffice\Controller\AppController;
 use BackOffice\Model\Table\UsersTable;
-use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\Core\Configure;
+use Cake\Validation\Validator;
 
 /**
  * Account Controller
  *
  * @property-read UsersTable $Users
+ *
  */
 class AccountController extends AppController
 {
@@ -21,8 +21,12 @@ class AccountController extends AppController
 	 */
 	public function index()
 	{
-		// Get user
+		/**
+		 * Get user from database
+		 * @var \BackOffice\Model\Entity\User $user
+		 */
 		$user = $this->Users->find()->where(['id' => $this->Auth->user('id')])->firstOrFail();
+
 		// Check Request for POST
 		if ($this->request->is('put')) {
 			// Profile Update
@@ -31,16 +35,20 @@ class AccountController extends AppController
 			}
 			// Password change
 			if ($this->request->getData('target') === 'password') {
-				pr($this->request->getData());
-				//$this->Users->patchEntity($user, $this->request->getData());
+				$errors = $this->Users->getValidator('changePassword')->errors($this->request->getData() + [ 'password' => $user->password ]);
+				$user->setErrors($errors);
+				if (empty($errors)) {
+					$user->password = $this->request->getData('new_password');
+				}
 			}
 			// Save user to db
 			if ($this->Users->save($user)) {
-				$this->Auth->setUser($user->toArray());
-				$this->Flash->success(__('Your profile has been updated.'), [ 'plugin' => 'BackOffice' ]);
-				return $this->redirect([ 'action' => 'index' ]);
+				$this->Auth->logout();
+				$this->Flash->success(__('Your profile has been updated. Please login again.'));
+				return $this->redirect(Configure::read('BackOffice.auth.loginAction'));
 			}
 		}
+		$user->setAccess('password', false);
 		// Set user to view
 		$this->set(compact('user'));
 		// Render view

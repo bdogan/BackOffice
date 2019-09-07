@@ -4,21 +4,17 @@
 <div class="row form_section">
 	<div class="form_section_info col-lg-4">
 		<h4 class="form_section_title"><?=__('Basic info')?></h4>
-		<p><?=__('Change your display name and mail address. After changed you will be redirect to login page.') ?></p>
+		<p><?=__('Change your display name and mail address.') ?></p>
 	</div>
   <div class="form_section_form col-lg-8">
-	  <?= $this->Form->create($user); ?>
-	    <?= $this->Form->hidden('target', [ 'value' => 'profile' ]); ?>
-      <div class="form-group">
-        <?= $this->Form->control('name', [ 'class' => 'form-control' ]); ?>
-      </div>
-      <div class="form-group">
-	      <?= $this->Form->control('email', [ 'class' => 'form-control' ]); ?>
-      </div>
-      <div class="d-flex justify-content-start mt-4">
-        <?= $this->Form->button(__('Update account info'), [ 'class' => 'btn btn-success' ]); ?>
-      </div>
-	  <?= $this->Form->end(); ?>
+    <?= $this->Form->create($user); ?>
+    <?= $this->Form->hidden('target', [ 'value' => 'profile' ]); ?>
+    <div class="form-row mb-2">
+      <?= $this->Form->control('name', [ 'class' => 'form-control', 'label' => 'Name', 'templateVars' => [ 'class' => 'col-12 mb-3' ] ]); ?>
+      <?= $this->Form->control('email', [ 'class' => 'form-control', 'label' => 'E-Mail', 'templateVars' => [ 'class' => 'col-12 mb-3' ] ]); ?>
+    </div>
+    <?= $this->Form->button(__('Update account info'), [ 'class' => 'btn btn-success' ]); ?>
+    <?= $this->Form->end(); ?>
   </div>
 </div>
 
@@ -26,26 +22,17 @@
 <div class="row form_section">
   <div class="form_section_info col-lg-4">
     <h4 class="form_section_title"><?=__('Password')?></h4>
-    <p><?=__('Change your email address. After changed you will be redirect to login page.') ?></p>
+    <p><?=__('Change your account password.') ?></p>
   </div>
   <div class="form_section_form col-lg-8">
       <?= $this->Form->create($user); ?>
 	    <?= $this->Form->hidden('target', [ 'value' => 'password' ]); ?>
-      <div class="row">
-          <div class="form-group col-lg-12 clearfix">
-	            <?= $this->Form->control('current_password', [ 'class' => 'form-control', 'label' => 'Current Password' ]); ?>
-          </div>
-          <div class="form-group col-lg-6">
-	            <?= $this->Form->control('new_password', [ 'class' => 'form-control', 'label' => 'New Password' ]); ?>
-          </div>
-          <div class="form-group col-lg-6">
-	            <?= $this->Form->control('new_password_verify', [ 'class' => 'form-control', 'label' => 'New Password Verify' ]); ?>
-          </div>
-          <div class="d-flex col-12 justify-content-start mt-4">
-	            <?= $this->Form->button(__('Update password'), [ 'class' => 'btn btn-danger' ]); ?>
-          </div>
+      <div class="form-row mb-2">
+	        <?= $this->Form->control('old_password', [ 'type' => 'password', 'class' => 'form-control', 'label' => 'Current Password', 'templateVars' => [ 'class' => 'col-12 mb-3' ] ]); ?>
+          <?= $this->Form->control('new_password', [ 'type' => 'password', 'class' => 'form-control', 'label' => 'New Password', 'templateVars' => [ 'class' => 'col-lg-6 mb-3' ] ]); ?>
+	        <?= $this->Form->control('new_password_verify', [ 'type' => 'password', 'class' => 'form-control', 'label' => 'New Password Verify', 'templateVars' => [ 'class' => 'col-lg-6 mb-3' ] ]); ?>
       </div>
+      <?= $this->Form->button(__('Update password'), [ 'class' => 'btn btn-danger' ]); ?>
       <?= $this->Form->end(); ?>
-
   </div>
 </div>

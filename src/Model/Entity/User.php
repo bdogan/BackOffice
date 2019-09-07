@@ -1,6 +1,7 @@
 <?php
 namespace BackOffice\Model\Entity;
 
+use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\Entity;
 
 /**
@@ -46,4 +47,32 @@ class User extends Entity
     protected $_hidden = [
         'password'
     ];
+
+	/**
+	 * Set password
+	 *
+	 * @param $value
+	 *
+	 * @return bool|string
+	 */
+    protected function _setPassword($value)
+    {
+	    if (!empty($value)) {
+		    $hasher = new DefaultPasswordHasher();
+		    return $hasher->hash($value);
+	    }
+    }
+
+	/**
+	 * Check user password
+	 *
+	 * @param $password
+	 *
+	 * @return bool
+	 */
+    public function checkPassword($password)
+    {
+	    $hasher = new DefaultPasswordHasher();
+    	return $hasher->check($password, $this->password);
+    }
 }
