@@ -18,7 +18,9 @@ class AppController extends Controller
 		$this->viewBuilder()->setClassName('BackOffice.App');
 
 		// FlashComponent
-		$this->loadComponent('Flash', [ 'plugin' => 'BackOffice' ]);
+		$this->loadComponent('Flash', [
+			'element' => 'BackOffice.default',
+		]);
 
 		// CsrfComponent
 		$this->loadComponent('Csrf');
@@ -31,7 +33,7 @@ class AppController extends Controller
 				'logoutAction' => Configure::read('BackOffice.auth.logoutAction'),
 				'loginRedirect' => Configure::read('BackOffice.auth.loginRedirect'),
 				'flash' => [
-					'plugin' => 'BackOffice',
+					'element' => 'BackOffice.default',
 					'params' => [
 						'class' => 'danger'
 					]

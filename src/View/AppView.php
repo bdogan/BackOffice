@@ -29,6 +29,12 @@ class AppView extends View
         // Load helpers
         $this->loadHelper('BackOffice.Page');
 
+        $this->loadHelper('Form', [
+        	'templates' => [
+        	    'inputContainer' => '{{content}}'
+	        ]
+        ]);
+
     }
 
     /**

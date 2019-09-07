@@ -18,11 +18,8 @@ use Cake\Utility\Security;
  */
 class CreateUserCommand extends Command
 {
-
-	public function initialize() {
-		parent::initialize();
-		$this->loadModel('Users');
-	}
+	// Set model class to Users
+	public $modelClass = 'BackOffice.Users';
 
 	/**
      * Hook method for defining this command's option parser.

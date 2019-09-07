@@ -1,7 +1,7 @@
 <?php
 use Migrations\AbstractMigration;
 
-class Users extends AbstractMigration
+class CreateUsers extends AbstractMigration
 {
     /**
      * Change Method.
@@ -19,6 +19,7 @@ class Users extends AbstractMigration
 		    ->addColumn('password', 'string', [ 'limit' => 255, 'null' => false ])
 		    ->addColumn('last_login_ip', 'string', [ 'null' => true, 'default' => null ])
 		    ->addColumn('last_login', 'datetime', [ 'null' => true, 'default' => null ])
+		    ->addColumn('role', 'string', [ 'limit' => 10, 'null' => false ])
 		    ->addColumn('created', 'datetime', [ 'null' => true, 'default' => null ])
 		    ->addColumn('modified', 'datetime', [ 'null' => true, 'default' => null ])
 		    ->create();

@@ -22,5 +22,4 @@
                 <div class="col"><div class="line"></div></div>
             </div>
     </div>
-    <?= $this->Flash->render() ?>
 </header>

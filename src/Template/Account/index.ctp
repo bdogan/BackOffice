@@ -7,17 +7,16 @@
 		<p><?=__('Change your display name and mail address. After changed you will be redirect to login page.') ?></p>
 	</div>
   <div class="form_section_form col-lg-8">
-	  <?= $this->Form->create(); ?>
+	  <?= $this->Form->create($user); ?>
+	    <?= $this->Form->hidden('target', [ 'value' => 'profile' ]); ?>
       <div class="form-group">
-        <label for="name"><?= __('Name'); ?></label>
-        <input name="User.name" type="text" class="form-control" id="name" />
+        <?= $this->Form->control('name', [ 'class' => 'form-control' ]); ?>
       </div>
       <div class="form-group">
-        <label for="mail"><?= __('Mail Address'); ?></label>
-        <input name="User.mail" type="text" class="form-control" id="mail" />
+	      <?= $this->Form->control('email', [ 'class' => 'form-control' ]); ?>
       </div>
       <div class="d-flex justify-content-start mt-4">
-        <button type="submit" class="btn btn-success"><?= __('Update account info'); ?></button>
+        <?= $this->Form->button(__('Update account info'), [ 'class' => 'btn btn-success' ]); ?>
       </div>
 	  <?= $this->Form->end(); ?>
   </div>
@@ -30,23 +29,20 @@
     <p><?=__('Change your email address. After changed you will be redirect to login page.') ?></p>
   </div>
   <div class="form_section_form col-lg-8">
-
-      <?= $this->Form->create(); ?>
+      <?= $this->Form->create($user); ?>
+	    <?= $this->Form->hidden('target', [ 'value' => 'password' ]); ?>
       <div class="row">
           <div class="form-group col-lg-12 clearfix">
-            <label for="current_password"><?= __('Current Password'); ?></label>
-            <input name="User.Password.current_password" type="text" class="form-control" id="current_password" />
+	            <?= $this->Form->control('current_password', [ 'class' => 'form-control', 'label' => 'Current Password' ]); ?>
           </div>
           <div class="form-group col-lg-6">
-            <label for="new_password"><?= __('New Password'); ?></label>
-            <input name="User.Password.new_password" type="password" class="form-control" id="new_password" />
+	            <?= $this->Form->control('new_password', [ 'class' => 'form-control', 'label' => 'New Password' ]); ?>
           </div>
           <div class="form-group col-lg-6">
-            <label for="new_password_verify"><?= __('New Password Verify'); ?></label>
-            <input name="User.Password.new_password_verify" type="password" class="form-control" id="new_password_verify" />
+	            <?= $this->Form->control('new_password_verify', [ 'class' => 'form-control', 'label' => 'New Password Verify' ]); ?>
           </div>
           <div class="d-flex col-12 justify-content-start mt-4">
-            <button type="submit" class="btn btn-danger"><?= __('Update password'); ?></button>
+	            <?= $this->Form->button(__('Update password'), [ 'class' => 'btn btn-danger' ]); ?>
           </div>
       </div>
       <?= $this->Form->end(); ?>
