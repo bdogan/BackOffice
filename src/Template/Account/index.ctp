@@ -11,7 +11,7 @@
     <?= $this->Form->hidden('target', [ 'value' => 'profile' ]); ?>
     <div class="form-row mb-2">
       <?= $this->Form->control('name', [ 'label' => 'Name', 'container' => [ 'class' => 'col-12 mb-3' ] ]); ?>
-      <?= $this->Form->control('email', [ 'label' => 'E-Mail', 'container' => [ 'class' => 'col-12 mb-3' ], 'info' => __('Warning; this email address also used to login.') ]); ?>
+      <?= $this->Form->control('email', [ 'label' => 'E-Mail', 'container' => [ 'class' => 'col-12 mb-3' ], 'info' => __('This email address also used to login backoffice.') ]); ?>
     </div>
     <?= $this->Form->button(__('Update account info'), [ 'class' => 'btn btn-success' ]); ?>
     <?= $this->Form->end(); ?>
@@ -22,7 +22,7 @@
 <div class="row form_section">
   <div class="form_section_info col-lg-4">
     <h4 class="form_section_title"><?=__('Password')?></h4>
-    <p><?=__('Change your account password.') ?></p>
+    <p><?=__('Change your account password. After changed you will be redirect to login page.') ?></p>
   </div>
   <div class="form_section_form col-lg-8">
       <?= $this->Form->create($user); ?>
