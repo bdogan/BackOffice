@@ -13,7 +13,9 @@ use Cake\Validation\Validator;
  */
 class AccountController extends AppController
 {
-	// User Users Class
+	/**
+	 * @var string ModelClass
+	 */
 	public $modelClass = 'BackOffice.Users';
 
 	/**
@@ -25,7 +27,7 @@ class AccountController extends AppController
 		 * Get user from database
 		 * @var \BackOffice\Model\Entity\User $user
 		 */
-		$user = $this->Users->find()->where(['id' => $this->Auth->user('id')])->firstOrFail();
+		$user = $this->Users->get($this->Auth->user('id'));
 
 		// Check Request for POST
 		if ($this->request->is('put')) {

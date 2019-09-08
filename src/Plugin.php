@@ -2,10 +2,12 @@
 
 namespace BackOffice;
 
+use BackOffice\Middleware\CookieAuthMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
 
 /**
@@ -86,5 +88,21 @@ class Plugin extends BasePlugin
 				}
 			}
 		);
+	}
+
+	/**
+	 * @param \Cake\Http\MiddlewareQueue $middleware
+	 *
+	 * @return \Cake\Http\MiddlewareQueue|void
+	 */
+	public function middleware( $middleware ) {
+		// Encrypted cookie middleware
+		$middleware->add(new EncryptedCookieMiddleware(
+			[ 'UPLR', 'BOSK' ],
+			Configure::readOrFail('Security.cookieKey')
+		));
+
+		// Return middleware
+		return $middleware;
 	}
 }

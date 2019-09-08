@@ -8,13 +8,15 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 /**
  * Auth Controller
  *
+ * @property-read \BackOffice\Model\Table\UsersTable $Users
  */
 class AuthController extends AppController
 {
+
 	/**
-	 * Table Locator
+	 * @var string ModelClass
 	 */
-	use LocatorAwareTrait;
+	public $modelClass = 'Users';
 
 	/**
 	 * @inheritdoc
@@ -22,7 +24,7 @@ class AuthController extends AppController
 	 */
 	public function implementedEvents() {
 		return array_merge(parent::implementedEvents(), [
-			'Auth.afterIdentify' => 'onAfterIdentity'
+			'BackOffice.Auth.afterLogin' => 'onAfterLogin'
 		]);
 	}
 
@@ -32,24 +34,24 @@ class AuthController extends AppController
 	 * @param Event $event
 	 * @param $user
 	 */
-	public function onAfterIdentity(Event $event, $user) {
-		// Get users table
-		$usersTable = $this->getTableLocator()->get('ControlPanel.Users');
+	public function onAfterLogin(Event $event) {
 
-		// Get specific user
-		$userEntity = $usersTable->get($user['id']);
+		$userData = $event->getData('user');
+		$controller = $event->getSubject();
 
-		// Set last login DateTime
-		$userEntity->last_login = Chronos::create();
+		// Save Last Login / Ip
+		$analytic = [
+			'last_login' => Chronos::create(),
+			'last_login_ip' => $controller->getRequest()->clientIp()
+		];
+		$this->Users->updateAll($analytic, [ 'id' => $userData['id'] ]);
 
-		// Set last login ip address
-		$userEntity->last_login_ip = $this->getRequest()->clientIp();
-
-		// Save to database
-		$usersTable->save($userEntity);
+		// Merge
+		$userData = array_merge($userData, $analytic);
 
 		// Change result
-		$event->setResult($userEntity->toArray());
+		$event->setResult($userData);
+
 	}
 
 	/**
@@ -62,8 +64,17 @@ class AuthController extends AppController
 		if ($this->request->is('post')) { // Check Request is post
 			$user = $this->Auth->identify(); // Identify user
 			if ($user) {
-				$this->Auth->setUser($user); // Save user
-				return $this->redirect($this->Auth->redirectUrl());
+				$loginEvent = new Event('BackOffice.Auth.afterLogin', $this, [
+					'user' => $user,
+					'remember_me' => $this->request->getData('remember_me')
+				]);
+				$this->getEventManager()->dispatch($loginEvent);
+				$user = $loginEvent->getResult();
+				if (!empty($user)) {
+					$this->Auth->setUser($user); // Save user
+					return $this->redirect($this->Auth->redirectUrl());
+				}
+				$this->Flash->error(__('Something was wrong'));
 			} else {
 				$this->Flash->error(__('Email or password is incorrect'));
 			}

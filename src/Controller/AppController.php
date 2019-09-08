@@ -39,6 +39,8 @@ class AppController extends Controller
 				'flash' => [ 'element' => 'error' ],
 				'storage' => Configure::read('BackOffice.auth.storage', 'session')
 			]);
+			// CookieLoginComponent
+			$this->loadComponent('BackOffice.CookieAuth');
 		}
 	}
 
