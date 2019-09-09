@@ -24,11 +24,11 @@
         </div>
     </li>
     <?php foreach ($sidebarMenu as $name => $item) { ?>
-      <li class="menu-item">
-          <a href="#" class="active"><i class="material-icons-round"><?=$item['icon']?></i><?=$item['title']?></a>
-      </li>
+        <li class="menu-item">
+            <?php
+                $isActive = $this->Url->build($item['route']['action']) === $this->Url->build(null);
+            ?>
+            <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['route']['action'], [ 'escape' => false, 'class' => $isActive ? 'active' : '' ]) ?>
+        </li>
     <?php } ?>
-    <li class="menu-item">
-        <a href="#" class=""><i class="material-icons-round">local_pharmacy</i>Eczaneler</a>
-    </li>
 </ul>

@@ -47,7 +47,7 @@ class PageHelper extends Helper
     	if (!isset($this->crumbs['main_page']) && Configure::check('BackOffice.routes.main_page.action')) {
 		    $this->crumbs = array_merge([
 		    	'main_page' => [
-				    'title' => __('Main Page'),
+				    'title' => __('Dashboard'),
 				    'action' => Configure::read('BackOffice.routes.main_page.action'),
 				    'options' => []
 			    ]
