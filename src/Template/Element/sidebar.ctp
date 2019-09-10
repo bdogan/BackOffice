@@ -1,6 +1,8 @@
 <?php
-  use Cake\Core\Configure;
   use Cake\Utility\Hash;
+
+  $circleShape = '<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="2" cy="2" r="2" fill="#B7BCCA"/></svg>';
+
 ?>
 <ul class="wrapper">
     <li class="user">
@@ -23,6 +25,15 @@
     <?php foreach ($this->Page->getMenu('sidebar') as $item) { ?>
         <li class="menu-item">
             <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['action'], [ 'escape' => false, 'class' => $this->Page->isActiveAction($item['action'], Hash::get($item, 'exact', false)) ? 'active' : '' ]) ?>
+            <?php if (isset($item['children']) && $this->Page->isActiveAction($item['action'], Hash::get($item, 'exact', false))) { ?>
+                <ul>
+                    <?php foreach ($item['children'] as $subItem) { ?>
+                        <li class="menu-item">
+	                          <?= $this->Html->link($this->Html->tag('i', 'lens', [ 'class' => 'material-icons-round' ]) . $subItem['title'], $subItem['action'], [ 'escape' => false, 'class' => $this->Page->isActiveAction($subItem['action'], Hash::get($subItem, 'exact', false)) ? 'active' : '' ]) ?>
+                        </li>
+                    <?php } ?>
+                </ul>
+            <?php } ?>
         </li>
     <?php } ?>
 </ul>

@@ -37,17 +37,25 @@ body {
     z-index: 1;
 }
 
-.sidebar > ul.wrapper {
+.sidebar ul {
     padding: 0;
     margin: 0;
     list-style-type: none;
 }
 
-.sidebar > ul.wrapper > li {
+.sidebar ul li ul {
+    padding: 15px 0;
+    border-bottom: 1px solid #EFF1F6;
+}
+
+.sidebar ul li {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--text-muted-color);
+}
+
+.sidebar > ul.wrapper > li {
     padding: 17px 20px;
 }
 
@@ -135,26 +143,45 @@ body {
     display: flex;
     align-items: center;
     font-weight: 500;
-    padding: 17px 20px;
     position: relative;
     transition: color 100ms ease-in-out, background-color 100ms ease-in-out;
+}
+
+.sidebar > ul.wrapper > li.menu-item > a {
+    padding: 17px 20px;
+}
+
+.sidebar > ul.wrapper > li.menu-item li.menu-item > a {
+    padding: 9px 32px;
+    font-size: 12px;
+    color: #7B8398
+}
+.sidebar > ul.wrapper > li.menu-item li.menu-item > a.active {
+    color: var(--text-active-color);
+}
+
+.sidebar > ul.wrapper > li.menu-item li.menu-item > a > i {
+    font-size: 8px;
+    margin-right: 16px;
 }
 
 .sidebar > ul.wrapper > li.menu-item a > i {
     margin-right: 12px;
 }
 
-.sidebar > ul.wrapper > li.menu-item a:hover {
+.sidebar > ul.wrapper > li.menu-item a:hover,
+.sidebar > ul.wrapper > li.menu-item li.menu-item a:hover {
     text-decoration: none;
     color: var(--text-active-color);
 }
 
-.sidebar > ul.wrapper > li.menu-item a.active {
+.sidebar > ul.wrapper > li.menu-item > a.active {
     color: var(--text-active-color);
     background-color: var(--text-active-bg);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.03);
 }
 
-.sidebar > ul.wrapper > li.menu-item a.active::before {
+.sidebar > ul.wrapper > li.menu-item > a.active::before {
     content: ' ';
     display: block;
     background-color: var(--text-active-color);
