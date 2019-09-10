@@ -1,9 +1,6 @@
 <?php
-
   use Cake\Core\Configure;
-
-  $sidebarMenu = Configure::read('BackOffice.menu.sidebar', []);
-
+  use Cake\Utility\Hash;
 ?>
 <ul class="wrapper">
     <li class="user">
@@ -17,18 +14,15 @@
                 <i class="material-icons-round">settings_applications</i>
             </button>
             <div class="dropdown-menu" aria-labelledby="user-menu">
-	              <?= $this->Html->link(__('Account'), Configure::read('BackOffice.routes.account.action'), [ 'class' => 'dropdown-item' ]) ?>
+	              <?= $this->Html->link(__('Account'), [ '_name' => 'account' ], [ 'class' => 'dropdown-item' ]) ?>
                 <div class="dropdown-divider"></div>
-                <?= $this->Html->link(__('Logout'), Configure::read('BackOffice.auth.logoutAction'), [ 'class' => 'dropdown-item' ]) ?>
+                <?= $this->Html->link(__('Logout'), [ '_name' => 'logout' ], [ 'class' => 'dropdown-item' ]) ?>
             </div>
         </div>
     </li>
-    <?php foreach ($sidebarMenu as $name => $item) { ?>
+    <?php foreach ($this->Page->getMenu('sidebar') as $item) { ?>
         <li class="menu-item">
-            <?php
-                $isActive = $this->Url->build($item['route']['action']) === $this->Url->build(null);
-            ?>
-            <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['route']['action'], [ 'escape' => false, 'class' => $isActive ? 'active' : '' ]) ?>
+            <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['action'], [ 'escape' => false, 'class' => $this->Page->isActiveAction($item['action'], Hash::get($item, 'exact', false)) ? 'active' : '' ]) ?>
         </li>
     <?php } ?>
 </ul>

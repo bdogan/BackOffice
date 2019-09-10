@@ -29,8 +29,6 @@ class AppController extends Controller
 		// CsrfComponent
 		$this->loadComponent('Csrf');
 
-
-
 		// AuthComponent
 		if (Configure::check('BackOffice.auth')) {
 			$this->loadComponent('Auth', [

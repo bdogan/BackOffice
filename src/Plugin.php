@@ -6,15 +6,19 @@ use BackOffice\Middleware\CookieAuthMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
+use Cake\Utility\Inflector;
 
 /**
  * Plugin for BackOffice
  */
 class Plugin extends BasePlugin
 {
+
+	use InstanceConfigTrait;
 
 	/**
 	 * Target plugin
@@ -28,7 +32,26 @@ class Plugin extends BasePlugin
 	 *
 	 * @var array
 	 */
-	private $config = [];
+	private $_defaultConfig = [
+		'rootPath' => '/_admin',
+		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'main_page' ] ],
+		'routes' => [
+			'account' => [ 'method' => [ 'get', 'put' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'login' => [ 'method' => [ 'get', 'post' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
+			'logout' => [ 'method' => 'get', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
+		],
+		'auth' => [
+			'authenticate' => [
+				'Form' => [
+					'userModel' => 'BackOffice.Users',
+					'fields' => [ 'username' => 'email' ]
+				]
+			],
+			'loginAction' => [ '_name' => 'login' ],
+			'logoutAction' => [ '_name' => 'logout' ],
+			'loginRedirect' => [ '_name' => 'main_page' ]
+		],
+	];
 
 	/**
 	 * Plugin constructor.
@@ -45,11 +68,17 @@ class Plugin extends BasePlugin
 		// Load config file
 		if ($config['config']) {
 			$configLoader = new PhpConfig();
-			$this->config = $configLoader->read($this->plugin->name . '.backoffice');
+			$this->setConfig($configLoader->read($this->plugin->name . '.backoffice'));
+		}
+
+		// Add plugin name to routes
+		foreach ($this->getConfig('routes') as $name => $route) {
+			$route['action'] += [ 'plugin' => $this->plugin->getName() ];
+			$this->setConfig('routes.' . $name . '.action', $route['action']);
 		}
 
 		// Set config
-		Configure::write('BackOffice', $this->config);
+		Configure::write('BackOffice', $this->getConfig());
 
 	}
 
@@ -71,15 +100,11 @@ class Plugin extends BasePlugin
 	 */
 	public function routes( $routes )
 	{
-		// Get route config
-		$routeConfig = Configure::read('BackOffice.routes', []);
-
-		// Config plugin routes
-		$routes->plugin(
-			$this->plugin->getName(),
-			[ 'path' => Configure::readOrFail('BackOffice.rootPath') ],
-			function(RouteBuilder $routes) use ($routeConfig) {
-				foreach ($routeConfig as $name => $config)
+		// Build routes
+		$routes->scope(
+			$this->getConfig('rootPath'),
+			function (RouteBuilder $routes) {
+				foreach ($this->getConfig('routes') as $name => $config)
 				{
 					$methods = (array) $config['method'];
 					foreach ($methods as $method) {

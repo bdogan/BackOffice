@@ -9,7 +9,7 @@
         <?php if ($prevCrumb) { ?>
             <div class="row">
                 <div class="col">
-                    <?= $this->Html->link($this->Html->tag('i', 'arrow_back_ios', [ 'class' => 'material-icons-round md-16' ]) . $prevCrumb['title'], $prevCrumb['action'], $prevCrumb['options'] + [ 'escape' => false ]); ?>
+                    <?= $this->Html->link($this->Html->tag('i', 'arrow_back_ios', [ 'class' => 'material-icons-round md-16' ]) . $prevCrumb['title'], $prevCrumb['action'], [ 'escape' => false ]); ?>
                 </div>
             </div>
         <?php } ?>
