@@ -13,7 +13,7 @@
         </div>
         <div class="btn-group dropright">
             <button class="dropdown-toggle" data-toggle="dropdown" id="user-menu">
-                <i class="material-icons-round">settings_applications</i>
+                <i class="material-icons-round">account_circle</i>
             </button>
             <div class="dropdown-menu" aria-labelledby="user-menu">
 	              <?= $this->Html->link(__('Account'), [ '_name' => 'account' ], [ 'class' => 'dropdown-item' ]) ?>
