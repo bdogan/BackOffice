@@ -261,7 +261,30 @@ header .br .line {
     display: none;
 }
 
+/** Card **/
+.card .card-header i {
+    vertical-align: -7px;
+    margin-right: 5px;
+}
+
+.card .card-header {
+    color: var(--default-text-color);
+    font-weight: 500;
+}
+
+/** Navigation Controller **/
+.navigation-items {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
 /** Material icons setup **/
+
+.btn .material-icons-round {
+    vertical-align: -3px;
+    margin-right: 5px;
+}
 
 /* Rules for sizing the icon. */
 .material-icons-round.md-16 { font-size: 16px; }

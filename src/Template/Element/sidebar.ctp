@@ -16,9 +16,9 @@
                 <i class="material-icons-round">account_circle</i>
             </button>
             <div class="dropdown-menu" aria-labelledby="user-menu">
-	              <?= $this->Html->link(__('Account'), [ '_name' => 'account' ], [ 'class' => 'dropdown-item' ]) ?>
+	              <?= $this->Html->link(__('Account'), [ '_name' => 'bo_account' ], [ 'class' => 'dropdown-item' ]) ?>
                 <div class="dropdown-divider"></div>
-                <?= $this->Html->link(__('Logout'), [ '_name' => 'logout' ], [ 'class' => 'dropdown-item' ]) ?>
+                <?= $this->Html->link(__('Logout'), [ '_name' => 'bo_logout' ], [ 'class' => 'dropdown-item' ]) ?>
             </div>
         </div>
     </li>

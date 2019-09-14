@@ -17,10 +17,10 @@
             </div>
             <div class="col content">
                 <?= $this->element('BackOffice.header'); ?>
-                <div class="container" style="margin: 0">
+                <div class="container-fluid" style="margin: 0">
 	                  <?= $this->Flash->render() ?>
                 </div>
-                <div class="container" style="margin: 0">
+                <div class="container-fluid" style="margin: 0">
                     <?= $this->fetch('content') ?>
                 </div>
             </div>

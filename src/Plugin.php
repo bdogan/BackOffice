@@ -10,7 +10,6 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
-use Cake\Utility\Inflector;
 
 /**
  * Plugin for BackOffice
@@ -36,9 +35,9 @@ class Plugin extends BasePlugin
 		'rootPath' => '/_admin',
 		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'main_page' ] ],
 		'routes' => [
-			'account' => [ 'method' => [ 'get', 'put' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
-			'login' => [ 'method' => [ 'get', 'post' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
-			'logout' => [ 'method' => 'get', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
+			'bo_account' => [ 'method' => [ 'get', 'put' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'bo_login' => [ 'method' => [ 'get', 'post' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
+			'bo_logout' => [ 'method' => 'get', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
 		],
 		'auth' => [
 			'authenticate' => [
@@ -47,8 +46,8 @@ class Plugin extends BasePlugin
 					'fields' => [ 'username' => 'email' ]
 				]
 			],
-			'loginAction' => [ '_name' => 'login' ],
-			'logoutAction' => [ '_name' => 'logout' ],
+			'loginAction' => [ '_name' => 'bo_login' ],
+			'logoutAction' => [ '_name' => 'bo_logout' ],
 			'loginRedirect' => [ '_name' => 'main_page' ]
 		],
 	];
