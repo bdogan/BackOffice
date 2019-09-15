@@ -2,8 +2,6 @@
 namespace BackOffice\Controller;
 
 use BackOffice\Model\Table\UsersTable;
-use Cake\Core\Configure;
-use Cake\Validation\Validator;
 
 /**
  * Account Controller
@@ -54,7 +52,7 @@ class AccountController extends AppController
 				if ($this->Users->save($user)) {
 					$this->Auth->logout();
 					$this->Flash->success(__('Your password has been changed. Please login again.'));
-					return $this->redirect(Configure::read('BackOffice.auth.loginAction'));
+					return $this->redirect($this->BackOffice->getConfig('auth.loginAction'));
 				}
 			}
 

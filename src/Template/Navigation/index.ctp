@@ -1,8 +1,7 @@
 <?php $this->Page->addCrumb( $activeMenu['title'], $activeMenu['action'] ); ?>
 
 <div class="row">
-  <div class="col-sm-2"></div>
-  <div class="col-12 col-sm-8">
+  <div class="col-12">
     <div class="card">
       <div class="card-header">
         <?= $this->Page->icon($activeMenu['icon']) ?>

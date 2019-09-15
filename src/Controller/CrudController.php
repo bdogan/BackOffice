@@ -47,7 +47,7 @@ class CrudController extends AppController
 
 		// Load active menu
 		$activeMenuKey = $controller->getRequest()->getParam('active_menu');
-		$this->activeMenu = Configure::read('BackOffice.menu.' . $activeMenuKey, null);
+		$this->activeMenu = $this->BackOffice->getConfig('menu.' . $activeMenuKey, null);
 		if ($activeMenuKey && !$this->activeMenu) {
 			throw new NotFoundException('Menu {0} not found', $activeMenuKey);
 		}
@@ -55,7 +55,7 @@ class CrudController extends AppController
 		// Load parent menu
 		if ($activeMenuKey) {
 			$parentMenuKey = preg_replace('/(\.|\.children\.)\w+$/', '', $activeMenuKey);
-			$this->parentMenu = Configure::read('BackOffice.menu.' . $parentMenuKey, null);
+			$this->parentMenu = $this->BackOffice->getConfig('menu.' . $parentMenuKey, null);
 		}
 
 		// Continue

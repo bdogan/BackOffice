@@ -14,12 +14,20 @@ use Cake\Core\Configure;
 class AppController extends Controller
 {
 	/**
+	 * @var \BackOffice\Plugin
+	 */
+	protected $BackOffice;
+
+	/**
 	 * App Controller initialize
 	 *
 	 * @throws \Exception
 	 */
 	public function initialize()
 	{
+		// Set back office
+		$this->BackOffice = Configure::read('BackOffice');
+
 		// Set view class
 		$this->viewBuilder()->setClassName('BackOffice.App');
 
@@ -30,14 +38,14 @@ class AppController extends Controller
 		$this->loadComponent('Csrf');
 
 		// AuthComponent
-		if (Configure::check('BackOffice.auth')) {
+		if ($this->BackOffice->getConfig('auth')) {
 			$this->loadComponent('Auth', [
-				'authenticate' => Configure::readOrFail('BackOffice.auth.authenticate'),
-				'loginAction' => Configure::read('BackOffice.auth.loginAction'),
-				'logoutAction' => Configure::read('BackOffice.auth.logoutAction'),
-				'loginRedirect' => Configure::read('BackOffice.auth.loginRedirect'),
+				'authenticate' => $this->BackOffice->getConfig('auth.authenticate'),
+				'loginAction' => $this->BackOffice->getConfig('auth.loginAction'),
+				'logoutAction' => $this->BackOffice->getConfig('auth.logoutAction'),
+				'loginRedirect' => $this->BackOffice->getConfig('auth.loginRedirect'),
 				'flash' => [ 'element' => 'error' ],
-				'storage' => Configure::read('BackOffice.auth.storage', 'session')
+				'storage' => $this->BackOffice->getConfig('auth.storage', 'session')
 			]);
 			// CookieLoginComponent
 			$this->loadComponent('BackOffice.CookieAuth');

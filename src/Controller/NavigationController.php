@@ -24,7 +24,7 @@ class NavigationController extends AppController
 		}
 
 		// Parse items from config
-		$activeMenu = Configure::read('BackOffice.menu.' . $activeMenuItemKey);
+		$activeMenu = $this->BackOffice->getConfig('menu.' . $activeMenuItemKey);
 		if (!$activeMenu) {
 			throw new NotFoundException(__('Menu {0} not found', $activeMenuItemKey));
 		}

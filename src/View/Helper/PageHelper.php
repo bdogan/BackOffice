@@ -3,7 +3,6 @@
 namespace BackOffice\View\Helper;
 
 use Cake\Core\Configure;
-use Cake\Core\InstanceConfigTrait;
 use Cake\View\Helper;
 
 /**
@@ -15,8 +14,6 @@ use Cake\View\Helper;
  */
 class PageHelper extends Helper
 {
-
-	use InstanceConfigTrait;
 
 	/**
 	 * @var array Helpers
@@ -30,11 +27,17 @@ class PageHelper extends Helper
      */
     protected $crumbs = [];
 
+	/**
+	 * @var \BackOffice\Plugin
+	 */
+    protected $BackOffice;
+
     /**
      * @inheritDoc
      */
     public function initialize( array $config )
     {
+		$this->BackOffice = Configure::read('BackOffice');
     }
 
     /**
@@ -56,8 +59,9 @@ class PageHelper extends Helper
      */
     public function getCrumbs()
     {
-    	if (Configure::check('BackOffice.main_page')) {
-		    $this->crumbs = array_merge([ Configure::read('BackOffice.main_page') ], $this->crumbs);
+	    $mainPage = $this->BackOffice->getConfig('main_page');
+    	if ($mainPage) {
+		    $this->crumbs = array_merge([ $mainPage ], $this->crumbs);
 	    }
     	return $this->crumbs;
     }
@@ -71,7 +75,7 @@ class PageHelper extends Helper
 	 */
     public function getMenu($menuName)
     {
-    	return Configure::read('BackOffice.menu.' . $menuName, []);
+    	return $this->BackOffice->getConfig('menu.' . $menuName, []);
     }
 
 	/**

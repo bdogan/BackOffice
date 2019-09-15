@@ -8,6 +8,7 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
 
@@ -18,13 +19,12 @@ class Plugin extends BasePlugin
 {
 
 	use InstanceConfigTrait;
+	use EventDispatcherTrait;
 
 	/**
-	 * Target plugin
-	 *
-	 * @var BasePlugin
+	 * @var array
 	 */
-	private $plugin;
+	private $_undefinedAction = [ 'controller' => 'UndefinedAction', 'action' => 'index', 'plugin' => 'BackOffice' ];
 
 	/**
 	 * Config
@@ -53,43 +53,27 @@ class Plugin extends BasePlugin
 	];
 
 	/**
-	 * Plugin constructor.
-	 *
-	 * @param array $map
-	 */
-	public function __construct( array $config = [] ) {
-		// Parent call
-		parent::__construct($config);
-
-		// Set target plugin
-		$this->plugin = $config['plugin'];
-
-		// Load config file
-		if ($config['config']) {
-			$configLoader = new PhpConfig();
-			$this->setConfig($configLoader->read($this->plugin->name . '.backoffice'));
-		}
-
-		// Add plugin name to routes
-		foreach ($this->getConfig('routes') as $name => $route) {
-			$route['action'] += [ 'plugin' => $this->plugin->getName() ];
-			$this->setConfig('routes.' . $name . '.action', $route['action']);
-		}
-
-		// Set config
-		Configure::write('BackOffice', $this->getConfig());
-
-	}
-
-	/**
 	 * @inheritDoc
 	 *
 	 * @param PluginApplicationInterface $app
 	 */
 	public function bootstrap( PluginApplicationInterface $app )
 	{
-		// Parent call
-		parent::bootstrap($app);
+		// Load config file
+		$configLoader = new PhpConfig();
+		$this->setConfig($configLoader->read('backoffice'));
+
+		// Add plugin name to routes
+		foreach ($this->getConfig('routes') as $name => $route) {
+			//$route['action'] += [ 'plugin' => $this->plugin->getName() ];
+			$this->setConfig('routes.' . $name . '.action', $route['action']);
+		}
+
+		// Set config
+		Configure::write('BackOffice', $this);
+
+		// Fire event
+		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
 	}
 
 	/**
