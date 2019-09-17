@@ -46,7 +46,7 @@ class CrudController extends AppController
 		$this->model = $this->loadModel($this->modelClass);
 
 		// Load active menu
-		$activeMenuKey = $controller->getRequest()->getParam('active_menu');
+		$activeMenuKey = $controller->getRequest()->getParam('menu');
 		$this->activeMenu = $this->BackOffice->getConfig('menu.' . $activeMenuKey, null);
 		if ($activeMenuKey && !$this->activeMenu) {
 			throw new NotFoundException('Menu {0} not found', $activeMenuKey);

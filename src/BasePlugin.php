@@ -93,6 +93,52 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	}
 
 	/**
+	 * Adds a new menu
+	 *
+	 * @param $section
+	 * @param $name
+	 * @param $menu
+	 */
+	public function addMenu($section, $name, $menu)
+	{
+		$this->BackOfficePlugin->setConfig('menu.' . $section . '.' . $name, $menu);
+	}
+
+	/**
+	 * Adda a menu sets
+	 *
+	 * @param $section
+	 * @param $menus
+	 */
+	public function addMenus($section, $menus)
+	{
+		foreach ($menus as $name => $menu) {
+			$this->addMenu($section, $name, $menu);
+		}
+	}
+
+	/**
+	 * Creates crud action
+	 *
+	 * @param $modelClass
+	 * @param $menu
+	 * @param array $options
+	 *
+	 * @return array
+	 */
+	public function crudAction($modelClass, $menu, $options = [])
+	{
+		return [
+			'controller' => 'Crud',
+			'action' => 'index',
+			'plugin' => 'BackOffice',
+			'model' => $modelClass,
+			'menu' => $menu,
+			'options' => $options
+		];
+	}
+
+	/**
 	 * Event ready listener
 	 *
 	 * @param \Cake\Event\Event $event

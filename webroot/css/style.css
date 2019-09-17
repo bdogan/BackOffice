@@ -286,6 +286,12 @@ header .br .line {
     margin-right: 5px;
 }
 
+.material-icons-round {
+    overflow: hidden;
+    max-width: 24px;
+
+}
+
 /* Rules for sizing the icon. */
 .material-icons-round.md-16 { font-size: 16px; }
 .material-icons-round.md-18 { font-size: 18px; }
