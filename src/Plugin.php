@@ -35,9 +35,9 @@ class Plugin extends BasePlugin
 		'rootPath' => '/_admin',
 		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'main_page' ] ],
 		'routes' => [
-			'bo_account' => [ 'method' => [ 'get', 'put' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
-			'bo_login' => [ 'method' => [ 'get', 'post' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
-			'bo_logout' => [ 'method' => 'get', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
+			'bo_account' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'bo_login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
+			'bo_logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
 		],
 		'auth' => [
 			'authenticate' => [
@@ -89,10 +89,7 @@ class Plugin extends BasePlugin
 			function (RouteBuilder $routes) {
 				foreach ($this->getConfig('routes') as $name => $config)
 				{
-					$methods = (array) $config['method'];
-					foreach ($methods as $method) {
-						$routes->{$method === 'all' ? 'connect' : $method}($config['template'], $config['action'], $method === 'get' ? $name : null);
-					}
+					$routes->connect($config['template'], $config['action'], [ '_name' => $name ])->setMethods((array) $config['method']);
 				}
 			}
 		);

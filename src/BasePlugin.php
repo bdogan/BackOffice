@@ -7,6 +7,8 @@ use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Event\EventManager;
 use Cake\Routing\RouteBuilder;
+use Cake\Utility\Hash;
+use Cake\Utility\Text;
 
 /**
  * Class BasePlugin
@@ -20,6 +22,32 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	 * @var \BackOffice\Plugin
 	 */
 	public $BackOfficePlugin;
+
+	/**
+	 * Crud methods
+	 */
+	const CRUD_METHODS = [
+		'list' => [
+			'method' => 'get',
+			'action' => 'index',
+			'template' => ':template'
+		],
+		'create' => [
+			'method' => 'post',
+			'action' => 'create',
+			'template' => ':template/create'
+		],
+		'update' => [
+			'method' => 'put',
+			'action' => 'update',
+			'template' => ':template/:id'
+		],
+		'delete' => [
+			'method' => 'delete',
+			'action' => 'delete',
+			'template' => ':template/:id'
+		]
+	];
 
 	/**
 	 * @inheritDoc
@@ -136,6 +164,34 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 			'menu' => $menu,
 			'options' => $options
 		];
+	}
+
+	/**
+	 * Add crud route
+	 *
+	 * @param $name
+	 * @param $modelClass
+	 * @param $template
+	 * @param array $options
+	 */
+	public function addCrud($name, $modelClass, $template, $options = [])
+	{
+		foreach (self::CRUD_METHODS as $methodName => $method) {
+			// Check if disable
+			if (Hash::get($options, $methodName) === false) continue;
+			$this->addRoute($name . ':' . $methodName, [
+				'method' => $method['method'],
+				'template' => Text::insert($method['template'], [ 'template' => $template ]),
+				'action' => [
+					'controller' => 'Crud',
+					'action' => $method['action'],
+					'plugin' => 'BackOffice',
+					'model' => $modelClass,
+					'menu' => $options['menu'],
+					'options' => $options
+				]
+			]);
+		}
 	}
 
 	/**

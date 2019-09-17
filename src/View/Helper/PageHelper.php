@@ -20,6 +20,12 @@ class PageHelper extends Helper
 	 */
 	public $helpers = [ 'Url', 'Html' ];
 
+	/**
+	 * Page Actions
+	 * @var array
+	 */
+	protected $actions = [];
+
     /**
      * Breadcrumb items
      *
@@ -115,6 +121,44 @@ class PageHelper extends Helper
     public function charIcon($title, $size = null)
     {
     	return $this->Html->tag('i',  mb_strtoupper( mb_substr( $title, 0, 1 ) ), [ 'class' => 'bo-char-icon ' . $size ] );
+    }
+
+	/**
+	 * Adds a new action to given zone
+	 *
+	 * @param $zone
+	 * @param $action
+	 */
+    public function addAction($zone, $action)
+    {
+    	if (!isset($this->actions[$zone])) {
+    		$this->actions[$zone] = [];
+	    }
+    	$this->actions[$zone][] = $action;
+    }
+
+	/**
+	 * Get actions
+	 *
+	 * @param $zone
+	 *
+	 * @return array|mixed
+	 */
+    public function getActions($zone)
+    {
+    	return isset($this->actions[$zone]) ? $this->actions[$zone] : [];
+    }
+
+	/**
+	 * Has action
+	 *
+	 * @param $zone
+	 *
+	 * @return bool
+	 */
+    public function hasActions($zone)
+    {
+    	return isset($this->actions[$zone]);
     }
 
 }

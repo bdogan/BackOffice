@@ -6,6 +6,9 @@ use Cake\View\View;
 
 /**
  * Class AppView
+ *
+ * @property-read \BackOffice\View\Helper\PageHelper $Page
+ * @property-read \BackOffice\View\Helper\FormHelper $Form
  * @package BackOffice\View
  */
 class AppView extends View
