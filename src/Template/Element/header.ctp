@@ -25,7 +25,7 @@
         <?php } ?>
         <div class="row">
 	        <?php foreach ($this->Page->getActions('secondary') as $item) { ?>
-		        <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', 'arrow_back_ios', [ 'class' => 'material-icons-round md-16' ]) : '') . $item['title'], $item['action'], [ 'escape' => false ]); ?>
+		        <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round md-16' ]) : '') . $item['title'], $item['action'], [ 'escape' => false ]); ?>
 	        <?php } ?>
         </div>
     </div>

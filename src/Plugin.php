@@ -2,18 +2,16 @@
 
 namespace BackOffice;
 
-use BackOffice\Middleware\CookieAuthMiddleware;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
-use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
-use Cake\Event\EventManager;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Plugin for BackOffice
@@ -36,11 +34,13 @@ class Plugin extends BasePlugin
 	 */
 	private $_defaultConfig = [
 		'rootPath' => '/_admin',
-		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'main_page' ] ],
+		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'backoffice:dashboard.index' ] ],
 		'routes' => [
-			'bo_account' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
-			'bo_login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
-			'bo_logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
+			'backoffice:dashboard.index' => [ 'method' => 'GET', 'template' => '/', 'action' => [ 'controller' => 'Dashboard', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'backoffice:definitions.index' => [ 'method' => 'GET', 'template' => '/definitions', 'action' => [ 'controller' => 'Navigation', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'backoffice:account.index' => [ 'method' => [ 'GET', 'PUT' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'backoffice:auth.login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
+			'backoffice:auth.logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
 		],
 		'auth' => [
 			'authenticate' => [
@@ -49,10 +49,18 @@ class Plugin extends BasePlugin
 					'fields' => [ 'username' => 'email' ]
 				]
 			],
-			'loginAction' => [ '_name' => 'bo_login' ],
-			'logoutAction' => [ '_name' => 'bo_logout' ],
-			'loginRedirect' => [ '_name' => 'main_page' ]
+			'loginAction' => [ '_name' => 'backoffice:auth.login' ],
+			'logoutAction' => [ '_name' => 'backoffice:auth.logout' ],
+			'loginRedirect' => [ '_name' => 'backoffice:dashboard.index' ]
 		],
+		'menu' => [
+			'_default' => [
+				'main_page' => [ 'title' => 'Dashboard', 'exact' => true, 'icon' => 'home', 'action' => [ '_name' => 'backoffice:dashboard.index' ], 'order' => -1 ],
+				'definitions' => [ 'title' => 'Definitions', 'icon' => 'dvr', 'action' => [ '_name' => 'backoffice:definitions.index' ], 'order' => 99999, 'children' => [
+
+				] ]
+			]
+		]
 	];
 
 	/**
@@ -66,12 +74,6 @@ class Plugin extends BasePlugin
 		$configLoader = new PhpConfig();
 		$this->setConfig($configLoader->read('backoffice'));
 
-		// Add plugin name to routes
-		foreach ($this->getConfig('routes') as $name => $route) {
-			//$route['action'] += [ 'plugin' => $this->plugin->getName() ];
-			$this->setConfig('routes.' . $name . '.action', $route['action']);
-		}
-
 		// Set config
 		Configure::write('BackOffice', $this);
 
@@ -84,14 +86,14 @@ class Plugin extends BasePlugin
 	 *
 	 * @param $zone
 	 *
-	 * @return bool
+	 * @return array|bool
 	 */
-	public function getActiveMenu($zone)
+	public function getActiveMenu($zone = '_default')
 	{
-		foreach ($this->getMenu($zone) as $name => $menu) {
-			$exact = isset($menu['exact']) ? $menu['exact'] : false;
-			if ($exact ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0) {
-				return true;
+		$zone = is_array($zone) ? $zone : $this->getMenu($zone);
+		foreach ($zone as $name => $menu) {
+			if ($this->isActiveMenu($menu)) {
+				return [ '_name' => $name ] + $menu;
 			}
 		}
 		return false;
@@ -106,8 +108,8 @@ class Plugin extends BasePlugin
 	 */
 	public function isActiveMenu($menu)
 	{
-		$exact = isset($menu['exact']) ? $menu['exact'] : false;
-		return $exact ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0;
+		$menu += [ 'exact' => false ];
+		return $menu['exact'] ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0;
 	}
 
 	/**
@@ -117,13 +119,22 @@ class Plugin extends BasePlugin
 	 *
 	 * @return array|null
 	 */
-	public function getMenu($zone)
+	public function getMenu($zone = '_default')
 	{
-		$dotPosition = strpos($zone, '.');
-		if ($dotPosition !== false) {
-			// todo:
+		return Hash::sort($this->getConfig('menu.' . $zone, []), '{s}.order');
+	}
+
+	/**
+	 * Returns active route
+	 *
+	 * @return array|bool
+	 */
+	public function getActiveRoute()
+	{
+		foreach ($this->getConfig('routes') as $name => $config) {
+			if (Router::url($config['action']) === Router::url(null)) return [ '_name' => $name ] + $config;
 		}
-		return $this->getConfig('menu.' . $zone, []);
+		return false;
 	}
 
 	/**

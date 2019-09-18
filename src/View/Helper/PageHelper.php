@@ -79,7 +79,7 @@ class PageHelper extends Helper
 	 *
 	 * @return mixed
 	 */
-    public function getMenu($zone)
+    public function getMenu($zone = '_default')
     {
     	return $this->BackOffice->getMenu($zone);
     }

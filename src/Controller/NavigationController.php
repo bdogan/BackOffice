@@ -17,16 +17,10 @@ class NavigationController extends AppController
 	 */
 	public function index()
 	{
-		// Get item key
-		$activeMenuItemKey = $this->getRequest()->getParam('active_menu', null);
-		if (!$activeMenuItemKey) {
-			throw new NotFoundException();
-		}
-
 		// Parse items from config
-		$activeMenu = $this->BackOffice->getConfig('menu.' . $activeMenuItemKey);
+		$activeMenu = $this->BackOffice->getActiveMenu();
 		if (!$activeMenu) {
-			throw new NotFoundException(__('Menu {0} not found', $activeMenuItemKey));
+			throw new NotFoundException(__('ActiveMenu not found'));
 		}
 
 		// Set items

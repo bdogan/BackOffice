@@ -16,13 +16,13 @@
                 <i class="material-icons-round">account_circle</i>
             </button>
             <div class="dropdown-menu" aria-labelledby="user-menu">
-	              <?= $this->Html->link(__('Account'), [ '_name' => 'bo_account' ], [ 'class' => 'dropdown-item' ]) ?>
+	              <?= $this->Html->link(__('Account'), [ '_name' => 'backoffice:account.index' ], [ 'class' => 'dropdown-item' ]) ?>
                 <div class="dropdown-divider"></div>
-                <?= $this->Html->link(__('Logout'), [ '_name' => 'bo_logout' ], [ 'class' => 'dropdown-item' ]) ?>
+                <?= $this->Html->link(__('Logout'), [ '_name' => 'backoffice:auth.logout' ], [ 'class' => 'dropdown-item' ]) ?>
             </div>
         </div>
     </li>
-    <?php foreach ($this->Page->getMenu('sidebar') as $item) { ?>
+    <?php foreach ($this->Page->getMenu() as $item) { ?>
         <li class="menu-item">
             <?php $isActive = $this->Page->isActiveMenu($item); ?>
             <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['action'], [ 'escape' => false, 'class' => $isActive ? 'active' : '' ]) ?>

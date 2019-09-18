@@ -28,22 +28,22 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	 */
 	const CRUD_METHODS = [
 		'list' => [
-			'method' => 'get',
+			'method' => 'GET',
 			'action' => 'index',
 			'template' => ':template'
 		],
 		'create' => [
-			'method' => 'post',
+			'method' => [ 'GET', 'POST' ],
 			'action' => 'create',
 			'template' => ':template/create'
 		],
 		'update' => [
-			'method' => 'put',
+			'method' => [ 'GET', 'PUT' ],
 			'action' => 'update',
 			'template' => ':template/:id'
 		],
 		'delete' => [
-			'method' => 'delete',
+			'method' => 'GET',
 			'action' => 'delete',
 			'template' => ':template/:id'
 		]
@@ -105,7 +105,7 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	public function addRoute($name, $options = [])
 	{
 		$options['action'] += [ 'plugin' => $this->getName() ];
-		$this->BackOfficePlugin->setConfig('routes.' . $name, $options);
+		$this->BackOfficePlugin->setConfig([ 'routes.' . $name => $options ]);
 	}
 
 	/**
@@ -127,9 +127,10 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	 * @param $name
 	 * @param $menu
 	 */
-	public function addMenu($section, $name, $menu)
+	public function addMenu($name, $menu, $zone = '_default')
 	{
-		$this->BackOfficePlugin->setConfig('menu.' . $section . '.' . $name, $menu);
+		$menu += [ 'order' => 1 ];
+		$this->BackOfficePlugin->setConfig('menu.' . $zone . '.' . $name, $menu);
 	}
 
 	/**
@@ -138,10 +139,10 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 	 * @param $section
 	 * @param $menus
 	 */
-	public function addMenus($section, $menus)
+	public function addMenus($menus, $zone = '_default')
 	{
 		foreach ($menus as $name => $menu) {
-			$this->addMenu($section, $name, $menu);
+			$this->addMenu($name, $menu, $zone);
 		}
 	}
 
@@ -179,16 +180,15 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 		foreach (self::CRUD_METHODS as $methodName => $method) {
 			// Check if disable
 			if (Hash::get($options, $methodName) === false) continue;
-			$this->addRoute($name . ':' . $methodName, [
+			$this->addRoute('backoffice:crud:' . $name . ':' . $methodName, [
 				'method' => $method['method'],
 				'template' => Text::insert($method['template'], [ 'template' => $template ]),
+				'options' => $options,
 				'action' => [
 					'controller' => 'Crud',
 					'action' => $method['action'],
 					'plugin' => 'BackOffice',
-					'model' => $modelClass,
-					'menu' => $options['menu'],
-					'options' => $options
+					'modelClass' => $modelClass
 				]
 			]);
 		}
