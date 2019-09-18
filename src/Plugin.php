@@ -8,9 +8,12 @@ use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Event\Event;
 use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventManager;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
 
 /**
  * Plugin for BackOffice
@@ -74,6 +77,53 @@ class Plugin extends BasePlugin
 
 		// Fire event
 		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
+	}
+
+	/**
+	 * Get active menu by given zone
+	 *
+	 * @param $zone
+	 *
+	 * @return bool
+	 */
+	public function getActiveMenu($zone)
+	{
+		foreach ($this->getMenu($zone) as $name => $menu) {
+			$exact = isset($menu['exact']) ? $menu['exact'] : false;
+			if ($exact ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check is active menu
+	 *
+	 * @param $menu
+	 *
+	 * @return bool
+	 */
+	public function isActiveMenu($menu)
+	{
+		$exact = isset($menu['exact']) ? $menu['exact'] : false;
+		return $exact ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0;
+	}
+
+	/**
+	 * Get menu by given zone
+	 *
+	 * @param $zone
+	 *
+	 * @return array|null
+	 */
+	public function getMenu($zone)
+	{
+		$dotPosition = strpos($zone, '.');
+		if ($dotPosition !== false) {
+			// todo:
+		}
+		return $this->getConfig('menu.' . $zone, []);
 	}
 
 	/**

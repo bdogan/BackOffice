@@ -24,12 +24,13 @@
     </li>
     <?php foreach ($this->Page->getMenu('sidebar') as $item) { ?>
         <li class="menu-item">
-            <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['action'], [ 'escape' => false, 'class' => $this->Page->isActiveAction($item['action'], Hash::get($item, 'exact', false)) ? 'active' : '' ]) ?>
-            <?php if (isset($item['children']) && $this->Page->isActiveAction($item['action'], Hash::get($item, 'exact', false))) { ?>
+            <?php $isActive = $this->Page->isActiveMenu($item); ?>
+            <?= $this->Html->link($this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) . $item['title'], $item['action'], [ 'escape' => false, 'class' => $isActive ? 'active' : '' ]) ?>
+            <?php if (isset($item['children']) && $isActive) { ?>
                 <ul>
                     <?php foreach ($item['children'] as $subItem) { ?>
                         <li class="menu-item">
-	                          <?= $this->Html->link($this->Html->tag('i', 'lens', [ 'class' => 'material-icons-round' ]) . $subItem['title'], $subItem['action'], [ 'escape' => false, 'class' => $this->Page->isActiveAction($subItem['action'], Hash::get($subItem, 'exact', false)) ? 'active' : '' ]) ?>
+	                          <?= $this->Html->link($this->Html->tag('i', 'lens', [ 'class' => 'material-icons-round' ]) . $subItem['title'], $subItem['action'], [ 'escape' => false, 'class' => $this->Page->isActiveMenu($subItem) ? 'active' : '' ]) ?>
                         </li>
                     <?php } ?>
                 </ul>

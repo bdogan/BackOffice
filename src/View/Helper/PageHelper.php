@@ -79,22 +79,21 @@ class PageHelper extends Helper
 	 *
 	 * @return mixed
 	 */
-    public function getMenu($menuName)
+    public function getMenu($zone)
     {
-    	return $this->BackOffice->getConfig('menu.' . $menuName, []);
+    	return $this->BackOffice->getMenu($zone);
     }
 
 	/**
-	 * Check given action is active
+	 * Check given menu is active
 	 *
-	 * @param $action
-	 * @param bool $exact
+	 * @param array $menu
 	 *
 	 * @return bool
 	 */
-    public function isActiveAction($action, $exact = false)
+    public function isActiveMenu($menu)
     {
-    	return $exact ? ($this->Url->build($action) === $this->Url->build(null)) : (strpos($this->Url->build(null), $this->Url->build($action)) === 0);
+	    return $this->BackOffice->isActiveMenu($menu);
     }
 
 	/**
