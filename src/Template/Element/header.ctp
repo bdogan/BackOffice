@@ -18,15 +18,21 @@
                 </div>
             </div>
         <?php } ?>
+
         <?php if ($currentCrumb) { ?>
             <div class="row">
                 <h3 class="col"><?= $currentCrumb['title'] ?></h3>
             </div>
         <?php } ?>
+    </div>
+    <!-- Secondary Page Actions -->
+    <div class="container pa" style="margin: 0">
         <div class="row">
-	        <?php foreach ($this->Page->getActions('secondary') as $item) { ?>
-		        <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round md-16' ]) : '') . $item['title'], $item['action'], [ 'escape' => false ]); ?>
-	        <?php } ?>
+            <div class="col">
+                <?php foreach ($this->Page->getActions('secondary') as $item) { ?>
+                    <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) : '') . $item['title'], $item['action'], [ 'escape' => false ]); ?>
+                <?php } ?>
+            </div>
         </div>
     </div>
 </header>

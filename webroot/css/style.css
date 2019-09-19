@@ -200,8 +200,8 @@ header {
 
 /** Breadcrumb **/
 header .br {
-
     padding-top: 35px;
+    margin-bottom: 10px !important;
 }
 
 header .br a {
@@ -214,7 +214,6 @@ header .br a {
 header .br a > i {
     vertical-align: -3px;
     margin-right: 2px;
-    font-weight: 800;
 }
 
 header .br a:hover {
@@ -229,6 +228,28 @@ header .br h3 {
 header .br .line {
     margin-top: 5px;
     border-bottom: 1px solid #DEDEDE;
+}
+
+/** Page Actions **/
+
+header .pa a {
+    color: var(--text-muted-color);
+    font-weight: lighter;
+}
+
+header .pa a:hover {
+    text-decoration: none;
+    color: var(--default-text-color);
+}
+
+header .pa a > i {
+    vertical-align: -7px;
+    margin-right: 5px;
+    font-weight: lighter;
+}
+
+header .pa a {
+    margin-left: 0;
 }
 
 /** Login **/
