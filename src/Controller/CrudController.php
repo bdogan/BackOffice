@@ -133,6 +133,16 @@ class CrudController extends AppController
 
 	}
 
+	/**
+	 * Hidden fields
+	 *
+	 * @return array
+	 */
+	protected function getHiddenFields()
+	{
+		return $this->hiddenFields + [ count($this->hiddenFields) => $this->model->getPrimaryKey() ];
+	}
+
 	public function index()
 	{
 		// Prepare associations data
@@ -156,6 +166,8 @@ class CrudController extends AppController
 			foreach ($assocMap as $field => $path) {
 				$item->set($field, Hash::get($item->toArray(), $path));
 			}
+			// Set primary key
+			$item->set('_primary', $item->get($this->model->getPrimaryKey()));
 		});
 		// Set to view
 		$this->set([
@@ -191,14 +203,18 @@ class CrudController extends AppController
 	}
 
 	/**
-	 * Hidden fields
+	 * Delete record
 	 *
-	 * @return array
+	 * @return \Cake\Http\Response|null
 	 */
-	protected function getHiddenFields()
-	{
-
-		return $this->hiddenFields + [ count($this->hiddenFields) => $this->model->getPrimaryKey() ];
+	public function delete() {
+		$entity = $this->model->get($this->getRequest()->getParam('id'));
+		if (!$entity) {
+			throw new NotFoundException('Record not found!');
+		}
+		$this->model->deleteOrFail($entity);
+		$this->Flash->success(__('Record has been deleted successfully.'));
+		return $this->redirect([ 'action' => 'index', 'modelClass' => $this->modelClass ]);
 	}
 
 }
