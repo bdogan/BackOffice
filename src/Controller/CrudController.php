@@ -98,6 +98,7 @@ class CrudController extends AppController
 		$this->set([
 			'_schema' => $schema,
 			'_fields' => $fields,
+			'_primary_key' => $this->model->getPrimaryKey(),
 			'activeMenu' => $this->activeMenu,
 			'modelClass' => $this->modelClass,
 			'entity' => $this->model->getAlias(),
@@ -215,6 +216,37 @@ class CrudController extends AppController
 		$this->model->deleteOrFail($entity);
 		$this->Flash->success(__('Record has been deleted successfully.'));
 		return $this->redirect([ 'action' => 'index', 'modelClass' => $this->modelClass ]);
+	}
+
+	/**
+	 * Update
+	 *
+	 * @return \Cake\Http\Response|null
+	 */
+	public function update() {
+		$entity = $this->model->get($this->getRequest()->getParam('id'));
+		if (!$entity) {
+			throw new NotFoundException('Record not found!');
+		}
+		// Check Request for POST
+		if ($this->request->is('put')) {
+			// Data -> Entity
+			$this->model->patchEntity($entity, $this->request->getData());
+			// Save to database
+			if ($this->model->save($entity)) {
+				$this->Flash->success(__('Record has been updated successfully.'));
+				return $this->redirect([ 'action' => 'index', 'modelClass' => $this->modelClass ]);
+			}
+		} else {
+			$this->set('record', $entity);
+		}
+		// Prepare associations data
+		/**
+		 * @var \Cake\ORM\Association\BelongsTo $assoc
+		 */
+		foreach ($this->model->associations()->getByType('BelongsTo') as $assoc) {
+			$this->set(Inflector::tableize($assoc->getAlias()), $assoc->find('list'));
+		}
 	}
 
 }

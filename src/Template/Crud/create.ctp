@@ -1,7 +1,7 @@
 <?php
 	$this->Page->addCrumb( 'New ' .  Cake\Utility\Inflector::singularize($entity) );
 ?>
-<?= $this->Form->create('Province', [ 'class' => 'row' ]);
+<?= $this->Form->create($entity, [ 'class' => 'row' ]);
     foreach ($_fields as $name) {
         echo $this->Html->tag('div', $this->Form->control( $name, [ 'container' => [ 'class' => 'col-6 mb-3' ] ] ), [ 'class' => 'col-12' ]);
     }
