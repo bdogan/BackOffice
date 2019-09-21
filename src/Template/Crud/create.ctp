@@ -1,13 +1,15 @@
 <?php
 	$this->Page->addCrumb( 'New ' .  Cake\Utility\Inflector::singularize($entity) );
 ?>
-<div class="row form_section">
-	<div class="form_section_form col-lg-8">
-		<?= $this->Form->create('Province'); ?>
-		<?php foreach ($_schema->columns() as $name) { ?>
-			<?= $this->Form->control($name, [ 'label' => $name, 'container' => [ 'class' => 'col-12 mb-3' ] ]); ?>
-		<?php } ?>
-		<?= $this->Form->button(__('Update account info'), [ 'class' => 'btn btn-success' ]); ?>
-		<?= $this->Form->end(); ?>
-	</div>
-</div>
+<?= $this->Form->create('Province', [ 'class' => 'row' ]);
+    foreach ($_fields as $name) {
+        echo $this->Html->tag('div', $this->Form->control( $name, [ 'container' => [ 'class' => 'col-6 mb-3' ] ] ), [ 'class' => 'col-12' ]);
+    }
+?>
+    <div class="col-6 mt-3 d-flex justify-content-end">
+        <?= $this->Html->link(__('Cancel'), [ 'action' => 'index', 'modelClass' => $modelClass ], [ 'class' => 'btn btn-outline' ]); ?>
+        <?= $this->Form->button(__('Save'), [ 'class' => 'btn btn-success' ]); ?>
+    </div>
+<?= $this->Form->end(); ?>
+
+
