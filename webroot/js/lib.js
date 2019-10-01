@@ -3,16 +3,6 @@
  */
 (function ($, Handlebars, window) {
 
-  /**
-   * Set Options
-   * @param defaultOptions
-   * @param options
-   * @returns any
-   */
-  const setOptions = function(defaultOptions, options) {
-    return Object.assign(defaultOptions, options || {});
-  };
-
   // Widget
   function Widget(struct) {
 
@@ -47,7 +37,7 @@
         // Get item listeners
         const _listen = Object.assign({}, this.listen, $(i).data('listen'));
         // Route listen
-        Object.keys(_listen).forEach(k => $(i).on(k, (e) => this[_listen[k]].call(this, e)));
+        Object.keys(_listen).forEach(k => $(i).on(k, (e) => this[_listen[k]].call(this, e, i)));
       });
     });
 
@@ -64,8 +54,9 @@
   // Attach widget to given selector
   Widget.prototype.renderTemplate = function(context) {
     context = Object.assign(this.context, context || {});
-    console.log(context);
-    return this.template(context);
+    const el = $(this.template(context));
+    el.find("[name^='news']").toArray().filter(i => $(i).attr('on:'))
+    return el;
   };
 
   // Export Widget
@@ -91,7 +82,7 @@
             {{/if}}
             <div class="modal-body">{{body}}</div>
             {{#footer}}
-              <div class="modal-footer">{{footer}}</div>
+              <div class="modal-footer">{{{footer}}}</div>
             {{/footer}}
           </div>
         </div>
@@ -114,10 +105,33 @@
       EXTRA_LARGE: ' modal-xl'
     },
     create(context, options) {
-      return $(this.renderTemplate(context)).appendTo('body').modal(Object.assign(this.options, options || {}));
+      return this.renderTemplate(context).appendTo('body').modal(Object.assign(this.options, options || {}));
     },
     show(context) {
       return this.create(context, { show: true });
+    }
+  });
+
+  /**
+   * Modal confirm
+   * @type {Widget}
+   */
+  window.Confirm = Widget.Create({
+    selector: "[data-confirm]",
+    template: `
+      <button class="btn btn-success" >Tamam</button>
+    `,
+    listen: {
+      click: 'onClick'
+    },
+    onClick(e, el) {
+      e.preventDefault();
+      Modal.create({
+        size: Modal.SIZE.SMALL,
+        title: 'Emin misiniz?',
+        body: $(el).data('confirm')
+      }).modal('show');
+      console.log('Confirm requested', el);
     }
   });
 

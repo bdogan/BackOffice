@@ -16,7 +16,7 @@
               <td><?= h($item->get($field)); ?></td>
             <?php endforeach; ?>
             <td>
-              <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->get('_primary'), 'action' => 'delete', 'modelClass' => $modelClass ], [ 'escape' => false, 'confirm' => 'Are you sure you wish to delete record?' ]); ?>
+              <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->get('_primary'), 'action' => 'delete', 'modelClass' => $modelClass ], [ 'escape' => false, 'data-confirm' => 'Are you sure you wish to delete record?' ]); ?>
               <?= $this->Html->link($this->Page->icon('play_for_work'), [ 'id' => $item->get('_primary'), 'action' => 'update', 'modelClass' => $modelClass ], [ 'escape' => false ]); ?>
             </td>
           </tr>
