@@ -45,7 +45,7 @@ class BasePlugin extends CakeBasePlugin implements EventListenerInterface
 		'delete' => [
 			'method' => 'GET',
 			'action' => 'delete',
-			'template' => ':template/:id'
+			'template' => ':template/:id/delete'
 		]
 	];
 

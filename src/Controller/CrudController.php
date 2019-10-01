@@ -1,11 +1,9 @@
 <?php
 namespace BackOffice\Controller;
 
-use Cake\Core\Configure;
+use Cake\Collection\Collection;
 use Cake\Event\Event;
 use Cake\Http\Exception\NotFoundException;
-use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -16,8 +14,6 @@ use Cake\Utility\Inflector;
  */
 class CrudController extends AppController
 {
-
-	use LocatorAwareTrait;
 
 	/**
 	 * @var \Cake\ORM\Table
@@ -60,6 +56,7 @@ class CrudController extends AppController
 	 * @param \Cake\Event\Event $event
 	 *
 	 * @return \Cake\Http\Response|null
+	 * @throws \ReflectionException if the model entity class not exists
 	 */
 	public function beforeFilter( Event $event ) {
 
@@ -91,9 +88,9 @@ class CrudController extends AppController
 		// Get model schema
 		$schema = $this->model->getSchema();
 		// Filter fields
-		$fields = Hash::filter($schema->columns(), function($columnName) {
+		$fields = new Collection(Hash::filter($schema->columns(), function($columnName) {
 			return !in_array($columnName, $this->getHiddenFields());
-		});
+		}));
 		// Set to view
 		$this->set([
 			'_schema' => $schema,
@@ -125,6 +122,24 @@ class CrudController extends AppController
 		// Add create action
 		if ($appView->view === 'index') {
 			$appView->Page->addAction('secondary', [ 'title' => 'New ' .  Inflector::singularize($this->model->getAlias()), 'icon' => 'add_circle_outline', 'action' => [ 'action' => 'create', 'modelClass' => $this->modelClass ] ]);
+		}
+
+		// Add crumb on update & create
+		$actions = new Collection([
+			[
+				'action' => 'create',
+				'title' => 'New {0}',
+				'route' => [ 'action' => 'create', 'modelClass' => $this->modelClass ]
+			],
+			[
+				'action' => 'update',
+				'title' => 'Edit {0}',
+				'route' => [ 'action' => 'update', 'modelClass' => $this->modelClass ]
+			]
+		]);
+		$action = $actions->firstMatch([ 'action' => $this->getRequest()->getParam('action') ]);
+		if ($action) {
+			$appView->Page->addCrumb( __($action['title'], Inflector::singularize($this->model->getAlias())) , $action['route'] );
 		}
 
 		// Set model class to url params
@@ -194,6 +209,9 @@ class CrudController extends AppController
 			}
 		}
 
+		// Set record to entity
+		$this->set('record', $this->entity);
+
 		// Prepare associations data
 		/**
 		 * @var \Cake\ORM\Association\BelongsTo $assoc
@@ -237,9 +255,11 @@ class CrudController extends AppController
 				$this->Flash->success(__('Record has been updated successfully.'));
 				return $this->redirect([ 'action' => 'index', 'modelClass' => $this->modelClass ]);
 			}
-		} else {
-			$this->set('record', $entity);
 		}
+
+		// Set entity to view
+		$this->set('record', $entity);
+
 		// Prepare associations data
 		/**
 		 * @var \Cake\ORM\Association\BelongsTo $assoc
@@ -247,6 +267,9 @@ class CrudController extends AppController
 		foreach ($this->model->associations()->getByType('BelongsTo') as $assoc) {
 			$this->set(Inflector::tableize($assoc->getAlias()), $assoc->find('list'));
 		}
+
+		// Set template to create
+		$this->viewBuilder()->setTemplate('create');
 	}
 
 }

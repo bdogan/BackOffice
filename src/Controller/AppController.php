@@ -38,6 +38,9 @@ class AppController extends Controller
 		// CsrfComponent
 		$this->loadComponent('Csrf');
 
+		// Pagination Component
+		$this->loadComponent('Paginator');
+
 		// AuthComponent
 		if ($this->BackOffice->getConfig('auth')) {
 			$this->loadComponent('Auth', [

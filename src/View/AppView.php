@@ -35,6 +35,9 @@ class AppView extends View
         // Load Form Helper
         $this->loadHelper('BackOffice.Form');
 
+        // Load paginator
+        $this->loadHelper('Paginator');
+
     }
 
     /**
@@ -42,37 +45,31 @@ class AppView extends View
      */
     private function loadAssets() {
 
-        // JQuery 3.4.1
-        $this->Html->script(
-            'https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js',
-            [ 'block' => 'script', 'integrity' => 'sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=', 'crossorigin' => 'anonymous' ]
-        );
+        // JQuery 3.4.1 **
+        $this->Html->script('https://unpkg.com/jquery@3.4.1/dist/jquery.min.js', [ 'block' => 'script' ] );
 
-        // Popper.js 1.15.0
-        $this->Html->script(
-            'https://cdn.jsdelivr.net/npm/popper.js@1.15.0/dist/umd/popper.min.js',
-            [ 'block' => 'script', 'integrity' => 'sha256-fTuUgtT7O2rqoImwjrhDgbXTKUwyxxujIMRIK7TbuNU=', 'crossorigin' => 'anonymous' ]
-        );
+        // Popper.js 1.15.0 **
+        $this->Html->script('https://unpkg.com/popper.js@1.15.0/dist/umd/popper.min.js', [ 'block' => 'script' ] );
 
         // Bootstrap 4.3.1
-        $this->Html->css(
-            'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css',
-            [ 'block' => 'css', 'integrity' => 'sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=', 'crossorigin' => 'anonymous' ]
-        );
-        $this->Html->script(
-            'https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js',
-            [ 'block' => 'script', 'integrity' => 'sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s=', 'crossorigin' => 'anonymous' ]
-        );
+        $this->Html->css('https://unpkg.com/bootstrap@4.3.1/dist/css/bootstrap.min.css', [ 'block' => 'css' ] );
+        $this->Html->script('https://unpkg.com/bootstrap@4.3.1/dist/js/bootstrap.min.js', [ 'block' => 'script' ] );
 
         // Material icons
-        $this->Html->css(
-            'https://fonts.googleapis.com/icon?family=Material+Icons+Round',
-            [ 'block' => 'css' ]
-        );
+        $this->Html->css('https://fonts.googleapis.com/icon?family=Material+Icons+Round', [ 'block' => 'css' ] );
 
+		// Lodash
+	    $this->Html->script('https://unpkg.com/lodash@4.17.15/lodash.min.js', [ 'block' => 'script' ] );
+
+	    // Handlebars
+	    $this->Html->script('https://unpkg.com/handlebars@4.4.0/dist/handlebars.min.js', [ 'block' => 'script' ] );
+
+	    // EventEmitter3
+	    $this->Html->script('https://unpkg.com/eventemitter3@latest/umd/eventemitter3.min.js', [ 'block' => 'script' ] );
 
         // Application assets
-        $this->Html->script('BackOffice.app', [ 'block' => 'script' ]);
+        $this->Html->script('BackOffice.lib', [ 'block' => 'script' ]);
+	    $this->Html->script('BackOffice.app', [ 'block' => 'script' ]);
         $this->Html->css('BackOffice.style', [ 'block' => 'css' ]);
 
     }
