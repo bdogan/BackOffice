@@ -1,7 +1,18 @@
 /**
  * BackOffice Library
  */
-(function ($, Handlebars, window) {
+(function ($, Handlebars, window, _) {
+
+  // Attr starts with selector
+  $.fn.attrBegins = function(s) {
+    const attrs = [];
+    this.each(function() {
+      $.each(this.attributes, function( index, attr ) {
+        if (attr.name.indexOf(s) === 0) attrs.push(attr);
+      });
+    });
+    return $(attrs);
+  };
 
   // Widget
   function Widget(struct) {
@@ -27,7 +38,10 @@
     this.context = this.context || {};
 
     // Template
-    this.template = this.template ? Handlebars.compile(this.template) : (() => {});
+    if (typeof this.template === 'string') {
+      this.template = { default: this.template };
+    }
+    if (this.template) Object.keys(this.template).forEach(k => this.template[k] = Handlebars.compile(this.template[k]));
 
     // Call hooks
     setTimeout(() => {
@@ -52,10 +66,33 @@
   Widget.prototype = new EventEmitter3();
 
   // Attach widget to given selector
-  Widget.prototype.renderTemplate = function(context) {
+  Widget.prototype.renderTemplate = function(context, name) {
+    const _w = this;
+    name = (name || 'default');
+    if (!this.template.hasOwnProperty(name)) {
+      throw new Error('Template ' + name + ' not found on widget ' + this.name);
+    }
     context = Object.assign(this.context, context || {});
-    const el = $(this.template(context));
-    el.find("[name^='news']").toArray().filter(i => $(i).attr('on:'))
+    // Create virtual dom
+    const _virtualContext = {};
+    const _virtualDomHolder = {};
+    Object.keys(context).forEach(k => {
+      if (context[k] instanceof $) {
+        const holderId = _.uniqueId('holder_');
+        _virtualDomHolder[holderId] = context[k];
+        context[k] = `<div style="display: none;" id="${holderId}">TEST</div>`;
+      }
+      _virtualContext[k] = context[k];
+    });
+    // Render template
+    const el = $(this.template[name](context));
+    // Virtual -> Real Dom
+    Object.keys(_virtualDomHolder).forEach(id => el.find('#' + id).replaceWith(_virtualDomHolder[id]));
+    // Listen events
+    el.attrBegins('on:').each(function() {
+      const eventName = this.name.replace('on:', '');
+      $(this.ownerElement).on(eventName, (_w.hasOwnProperty(this.value) ? _w[this.value].bind(_w) : (context[this.value] || (() => {})).bind(_w)));
+    });
     return el;
   };
 
@@ -81,9 +118,9 @@
             </div>
             {{/if}}
             <div class="modal-body">{{body}}</div>
-            {{#footer}}
+            {{#if footer}}
               <div class="modal-footer">{{{footer}}}</div>
-            {{/footer}}
+            {{/if}}
           </div>
         </div>
       </div>`,
@@ -117,22 +154,36 @@
    * @type {Widget}
    */
   window.Confirm = Widget.Create({
+    name: 'Confirm',
     selector: "[data-confirm]",
     template: `
-      <button class="btn btn-success" >Tamam</button>
+      <button class="btn btn-outline" on:click="onCancel">Cancel</button>
+      <button class="btn btn-success" on:click="onSuccess">Accept</button>
     `,
     listen: {
       click: 'onClick'
     },
+    activeModal: null,
+    activeTarget: null,
+    onSuccess(e) {
+      e.preventDefault();
+      $(e.target).attr('disabled', 'disabled');
+      window.location = this.activeTarget;
+    },
+    onCancel(e) {
+      e.preventDefault();
+      this.activeModal.modal('hide');
+    },
     onClick(e, el) {
       e.preventDefault();
-      Modal.create({
+      this.activeTarget = $(el).attr('href');
+      this.activeModal = Modal.create({
         size: Modal.SIZE.SMALL,
-        title: 'Emin misiniz?',
-        body: $(el).data('confirm')
+        title: 'Are you sure?',
+        body: $(el).data('confirm'),
+        footer: this.renderTemplate()
       }).modal('show');
-      console.log('Confirm requested', el);
     }
   });
 
-})($, Handlebars, window);
+})($, Handlebars, window, _);

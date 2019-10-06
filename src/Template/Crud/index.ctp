@@ -15,9 +15,11 @@
             <?php foreach ($_fields as $field) : ?>
               <td><?= h($item->get($field)); ?></td>
             <?php endforeach; ?>
-            <td>
-              <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->get('_primary'), 'action' => 'delete', 'modelClass' => $modelClass ], [ 'escape' => false, 'data-confirm' => 'Are you sure you wish to delete record?' ]); ?>
-              <?= $this->Html->link($this->Page->icon('play_for_work'), [ 'id' => $item->get('_primary'), 'action' => 'update', 'modelClass' => $modelClass ], [ 'escape' => false ]); ?>
+            <td class="actions">
+              <div class="btn-group btn-group-sm" role="group" aria-label="First group">
+	              <?= $this->Html->link($this->Page->icon('edit'), [ 'id' => $item->get('_primary'), 'action' => 'update', 'modelClass' => $modelClass ], [ 'escape' => false, 'class' => 'btn btn-dark', 'title' => __('Edit'), 'data-toggle' => 'tooltip' ]); ?>
+                <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->get('_primary'), 'action' => 'delete', 'modelClass' => $modelClass ], [ 'escape' => false, 'class' => 'btn btn-dark', 'data-confirm' => 'Are you sure you wish to delete record?', 'title' => __('Delete'), 'data-toggle' => 'tooltip' ]); ?>
+              </div>
             </td>
           </tr>
         <?php endforeach; ?>

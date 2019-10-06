@@ -121,7 +121,7 @@ class CrudController extends AppController
 
 		// Add create action
 		if ($appView->view === 'index') {
-			$appView->Page->addAction('secondary', [ 'title' => 'New ' .  Inflector::singularize($this->model->getAlias()), 'icon' => 'add_circle_outline', 'action' => [ 'action' => 'create', 'modelClass' => $this->modelClass ] ]);
+			$appView->Page->addAction('primary', [ 'title' => 'New ' .  Inflector::singularize($this->model->getAlias()), 'action' => [ 'action' => 'create', 'modelClass' => $this->modelClass ] ]);
 		}
 
 		// Add crumb on update & create

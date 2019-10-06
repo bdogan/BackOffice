@@ -196,6 +196,7 @@ body {
 
 header {
     margin-bottom: 20px;
+    position: relative;
 }
 
 /** Breadcrumb **/
@@ -232,24 +233,39 @@ header .br .line {
 
 /** Page Actions **/
 
-header .pa a {
+header .pa .secondary a {
     color: var(--text-muted-color);
     font-weight: lighter;
+    margin-right: 15px;
 }
 
-header .pa a:hover {
+header .pa .secondary a:hover {
     text-decoration: none;
     color: var(--default-text-color);
 }
 
-header .pa a > i {
+header .pa .secondary a > i {
     vertical-align: -7px;
     margin-right: 5px;
     font-weight: lighter;
 }
 
-header .pa a {
+header .pa .secondary a {
     margin-left: 0;
+}
+
+header .pa .primary {
+    position: absolute;
+    right: 0;
+    text-align: right;
+    bottom: 15px;
+}
+
+header .pa .primary a i {
+    vertical-align: -4px;
+    margin-right: 5px;
+    font-weight: lighter;
+    font-size: 18px;
 }
 
 /** Login **/
@@ -298,6 +314,20 @@ header .pa a {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+/** Table **/
+table .actions {
+    text-align: right;
+    font-size: 18px;
+    width: 67px;
+}
+table .actions a i{
+    font-size: 18px;
+    margin: 0!important;
+}
+table .actions a:first-child i{
+    margin-left: 0;
 }
 
 /** Material icons setup **/
