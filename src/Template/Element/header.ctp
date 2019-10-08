@@ -21,7 +21,7 @@
         <?php } ?>
     </div>
     <!-- Secondary Page Actions -->
-    <div class="container pa" style="margin: 0">
+    <div class="container pa" style="margin: 0; position: relative;">
         <div class="row">
             <div class="col-6 secondary">
                 <?php foreach ($this->Page->getActions('secondary') as $item) { ?>

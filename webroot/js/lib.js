@@ -106,8 +106,8 @@
   window.Modal = Widget.Create({
     name: 'Modal',
     template: `
-      <div class="modal fade" style="display: none;" id="{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{id}}_label" aria-hidden="true">
-        <div class="modal-dialog{{size}}" role="document">
+      <div class="modal" style="display: none;" id="{{id}}" tabindex="-1" role="dialog" aria-labelledby="{{id}}_label" aria-hidden="true">
+        <div class="modal-dialog{{size}} modal-dialog-centered" role="document">
           <div class="modal-content">
             {{#if title}}
             <div class="modal-header">

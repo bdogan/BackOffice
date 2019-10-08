@@ -196,7 +196,6 @@ body {
 
 header {
     margin-bottom: 20px;
-    position: relative;
 }
 
 /** Breadcrumb **/
@@ -328,6 +327,12 @@ table .actions a i{
 }
 table .actions a:first-child i{
     margin-left: 0;
+}
+table.card-body {
+    margin-bottom: 0;
+}
+table.card-body thead th {
+    border-top: none;
 }
 
 /** Material icons setup **/

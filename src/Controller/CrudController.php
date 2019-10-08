@@ -164,6 +164,9 @@ class CrudController extends AppController
 		// Prepare associations data
 		$assocMap = [];
 		$this->paginate = [
+			'order' => [
+				$this->model->getAlias() . '.' . $this->model->getDisplayField() => 'asc'
+			],
 			'contain' => Hash::map($this->model->associations()->getByType('BelongsTo'), '{n}', function($assoc) use (&$assocMap) {
 				/**
 				 * @var \Cake\ORM\Association\BelongsTo $assoc
