@@ -335,6 +335,12 @@ table.card-body thead th {
     border-top: none;
 }
 
+/** Paginator **/
+.pagination i {
+    font-size: 1rem;
+    vertical-align: -1px;
+}
+
 /** Material icons setup **/
 
 .btn .material-icons-round {

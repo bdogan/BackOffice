@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-4">
   <div class="col-12">
     <div class="card">
       <table class="table table-striped card-body">
@@ -28,8 +28,12 @@
       </table>
     </div>
 	  <?php if ($this->Paginator->total() > 1) { ?>
-      <ul class="pagination justify-content-end mt-3">
+      <ul class="pagination justify-content-center mt-3">
+	      <?= $this->Paginator->first($this->Page->icon('first_page'), [ 'escape' => false ]); ?>
+        <?= $this->Paginator->prev($this->Page->icon('chevron_left'), [ 'escape' => false ]); ?>
 			  <?= $this->Paginator->numbers(); ?>
+        <?= $this->Paginator->next($this->Page->icon('chevron_right'), [ 'escape' => false ]); ?>
+        <?= $this->Paginator->last($this->Page->icon('last_page'), [ 'escape' => false ]); ?>
       </ul>
 	  <?php } ?>
   </div>
