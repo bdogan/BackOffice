@@ -36,9 +36,12 @@ class Plugin extends BasePlugin
 		'rootPath' => '/_admin',
 		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'backoffice:dashboard.index' ] ],
 		'routes' => [
+			/** BO Mandatory */
 			'backoffice:dashboard.index' => [ 'method' => 'GET', 'template' => '/', 'action' => [ 'controller' => 'Dashboard', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
 			'backoffice:definitions.index' => [ 'method' => 'GET', 'template' => '/definitions', 'action' => [ 'controller' => 'Navigation', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
 			'backoffice:account.index' => [ 'method' => [ 'GET', 'PUT' ], 'template' => '/account', 'action' => [ 'controller' => 'Account', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'backoffice:pages.index' => [ 'method' => 'GET', 'template' => '/pages', 'action' => [ 'controller' => 'Pages', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			/** BO Auth */
 			'backoffice:auth.login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
 			'backoffice:auth.logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
 		],
@@ -56,6 +59,7 @@ class Plugin extends BasePlugin
 		'menu' => [
 			'_default' => [
 				'main_page' => [ 'title' => 'Dashboard', 'exact' => true, 'icon' => 'home', 'action' => [ '_name' => 'backoffice:dashboard.index' ], 'order' => -1 ],
+				'pages' => [ 'title' => 'Pages', 'exact' => true, 'icon' => 'home', 'action' => [ '_name' => 'backoffice:pages.index' ], 'order' => -1 ],
 				'definitions' => [ 'title' => 'Definitions', 'icon' => 'dvr', 'action' => [ '_name' => 'backoffice:definitions.index' ], 'order' => 99999, 'children' => [
 
 				] ]
