@@ -1,6 +1,7 @@
 <?php
 namespace BackOffice\View\Helper;
 
+use Cake\Utility\Hash;
 use Cake\View\Helper\FormHelper as BaseFormHelper;
 
 /**
@@ -19,7 +20,7 @@ class FormHelper extends BaseFormHelper
 			'errorClass' => 'is-invalid',
 			'templates' => [
 				'error' => '<div class="invalid-feedback">{{content}}</div>',
-				'formGroup' => '{{label}}{{input}}',
+				'formGroup' => '{{label}}{{before}}{{prefix}}{{input}}{{suffix}}{{after}}',
 				'nestingLabel' => '{{hidden}}{{input}}<label{{attrs}}>{{text}}</label>',
 				'inputContainer' => '<div class="{{class}} {{type}}{{required}}">{{content}}{{info}}</div>',
 				'inputContainerError' => '<div class="{{class}} {{type}}{{required}}">{{content}}{{error}}</div>'
@@ -79,10 +80,10 @@ class FormHelper extends BaseFormHelper
 		// Determine container class
 		switch (strtolower($options['options']['type'])) {
 			case 'radio':
-				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-radio' ];
+				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-radio' . Hash::get($options, 'options.templateVars.class', '')  ];
 				break;
 			case 'checkbox':
-				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-checkbox' ];
+				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-checkbox ' . Hash::get($options, 'options.templateVars.class', '') ];
 				break;
 		}
 
@@ -96,11 +97,31 @@ class FormHelper extends BaseFormHelper
 		$options += [
 			'templateVars' => []
 		];
+		$options['templateVars'] += [
+			'prefix' => '',
+			'suffix' => ''
+		];
 
 		// Input container options
 		if (isset($options['container'])) {
 			$options['templateVars'] = array_merge($options['templateVars'], $options['container']);
 			unset($options['container']);
+		}
+
+		// Input prefix
+		if (isset($options['prefix'])) {
+			$options['templateVars']['before'] = '<div class="input-group">';
+			$options['templateVars']['prefix'] = '<div class="input-group-prepend"><span class="input-group-text">' . $options['prefix'] . '</span></div>';
+			$options['templateVars']['after'] = '</div>';
+			unset($options['prefix']);
+		}
+
+		// Input suffix
+		if (isset($options['suffix'])) {
+			$options['templateVars']['before'] = '<div class="input-group">';
+			$options['templateVars']['suffix'] = '<div class="input-group-append"><span class="input-group-text">' . $options['suffix'] . '</span></div>';
+			$options['templateVars']['after'] = '</div>';
+			unset($options['suffix']);
 		}
 
 		// Input info options
@@ -111,6 +132,24 @@ class FormHelper extends BaseFormHelper
 
 		// Render control
 		return parent::control( $fieldName, $options );
+	}
+
+	/**
+	 * @param string $fieldName
+	 * @param array $options
+	 *
+	 * @return string
+	 */
+	public function dateTime( $fieldName, array $options = [] ) {
+		$options += [
+			'monthNames' => false,
+			'year' => [ 'class' => 'form-control' ],
+			'month' => [ 'class' => 'form-control' ],
+			'day' => [ 'class' => 'form-control' ],
+			'hour' => [ 'class' => 'form-control' ],
+			'minute' => [ 'class' => 'form-control' ],
+		];
+		return parent::dateTime( $fieldName, $options );
 	}
 
 }

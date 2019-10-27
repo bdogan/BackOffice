@@ -1,1 +1,1 @@
-HELLO
+<?php $this->Page->addCrumb('Pages'); ?>

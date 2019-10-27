@@ -354,6 +354,38 @@ table.card-body thead th {
 
 }
 
+/** SEO Preview **/
+.seo_preview {
+    font-weight: 300;
+}
+
+.seo_preview .title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    font-size: 1.285711rem;
+    line-height: 1.285711rem;
+    color: #1a0dab;
+    word-wrap: break-word;
+    margin-bottom: .4rem;
+}
+
+.seo_preview .link {
+    font-size: .93rem;
+    word-wrap: break-word;
+    margin-bottom: .4rem;
+    line-height: .93rem;
+    color: #006621;
+}
+
+.seo_preview .description {
+    margin: 0;
+    word-wrap: break-word;
+    color: #545454;
+    font-size: .93rem;
+    line-height: .93rem;
+}
+
+
 /* Rules for sizing the icon. */
 .material-icons-round.md-16 { font-size: 16px; }
 .material-icons-round.md-18 { font-size: 18px; }

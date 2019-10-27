@@ -31,11 +31,6 @@ class CrudController extends AppController
 	private $activeMenu;
 
 	/**
-	 * @var array
-	 */
-	private $parentMenu;
-
-	/**
 	 * Model hidden fields
 	 *
 	 * @var array
