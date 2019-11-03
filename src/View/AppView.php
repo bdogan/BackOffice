@@ -86,6 +86,20 @@ class AppView extends View
 	    // EventEmitter3
 	    $this->Html->script('https://unpkg.com/eventemitter3@latest/umd/eventemitter3.min.js', [ 'block' => 'script' ] );
 
+	    // Codemirror
+	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/lib/codemirror.css', [ 'block' => 'css' ] );
+	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/theme/monokai.css', [ 'block' => 'css' ] );
+	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/addon/display/fullscreen.css', [ 'block' => 'css' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/lib/codemirror.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/htmlmixed/htmlmixed.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/xml/xml.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/javascript/javascript.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/css/css.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/addon/display/fullscreen.js', [ 'block' => 'script' ] );
+
+	    // Slugify
+	    $this->Html->script('https://unpkg.com/speakingurl@14.0.1/lib/speakingurl.js', [ 'block' => 'script' ] );
+
         // Application assets
         $this->Html->script('BackOffice.lib', [ 'block' => 'script' ]);
 	    $this->Html->script('BackOffice.app', [ 'block' => 'script' ]);

@@ -20,8 +20,13 @@ class PagesController extends AppController
 
 	public function create() {
 		$page = new Page();
-		$page->set('is_published', true);
-		$page->set('published_after', str_replace(' ', 'T', Time::now()->i18nFormat("yyyy-MM-dd HH:mm")));
+		if ($this->request->is('post')) {
+			// Data -> Entity
+			$this->Pages->patchEntity( $page, $this->request->getData() );
+
+		}
+		// Set default values
+		$page->set('is_published', $this->request->getData('is_published', true));
 		$this->set('page', $page);
 	}
 }

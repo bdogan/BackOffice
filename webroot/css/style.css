@@ -385,6 +385,15 @@ table.card-body thead th {
     line-height: .93rem;
 }
 
+/** Codemirror */
+.CodeMirror {
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+.CodeMirror.CodeMirror-fullscreen {
+    border-radius: inherit;
+    border: inherit;
+}
 
 /* Rules for sizing the icon. */
 .material-icons-round.md-16 { font-size: 16px; }
