@@ -83,12 +83,6 @@ class PagesTable extends Table
             ->notEmptyString('title');
 
         $validator
-            ->scalar('canonical')
-            ->maxLength('canonical', 100)
-            ->requirePresence('canonical', 'create')
-            ->notEmptyString('canonical');
-
-        $validator
             ->scalar('description')
             ->maxLength('description', 250)
             ->allowEmptyString('description');
@@ -103,5 +97,22 @@ class PagesTable extends Table
             ->notEmptyString('is_system_default');
 
         return $validator;
+    }
+
+	/**
+	 * @inheritDoc
+	 *
+	 * @param \Cake\ORM\RulesChecker $rules
+	 *
+	 * @return \Cake\ORM\RulesChecker
+	 */
+    public function buildRules( RulesChecker $rules ) {
+
+    	// Name unique
+	    $rules->add($rules->isUnique(['name']));
+
+    	// Slug unique
+    	$rules->add($rules->isUnique(['slug']));
+	    return $rules;
     }
 }

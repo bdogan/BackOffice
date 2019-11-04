@@ -2,7 +2,8 @@
 <?php $this->Page->addCrumb('New Page'); ?>
 
 <?= $this->Form->create($page, [ 'class' => 'row' ]) ?>
-<?php if ($page->id) echo $this->Form->hidden('id', [ 'value' => $page->id ]); ?>
+<?= $page->id ? $this->Form->hidden('id', [ 'value' => $page->id ]): ''; ?>
+<?= $this->Form->hidden('type'); ?>
 <div class="col-12">
   <div class="row">
     <div class="col-md-8">
@@ -63,7 +64,7 @@
 
   <div class="d-flex justify-content-end border-top pt-3 mb-5">
     <?= $this->Html->link(__('Cancel'), [ 'action' => 'index' ], [ 'class' => 'btn btn-outline mr-3' ]); ?>
-    <?= $this->Form->button(__('Create'), [ 'class' => 'btn btn-success' ]); ?>
+    <?= $this->Form->button(__($page->id ? 'Save Changes' : 'Create'), [ 'class' => 'btn btn-success' ]); ?>
   </div>
 </div>
 <?= $this->Form->end(); ?>
@@ -128,18 +129,36 @@
     const seoPreviewEl = $(".seo_preview");
     const preview = [ $("input[name='title']").val().trim(), $("textarea[name='description']").val().trim(), $("input[name='slug']").val().trim() ];
     seoPreviewEl[preview.join('').length > 0 ? 'show' : 'hide']().prev()[preview.join('').length > 0 ? 'hide' : 'show']();
-    seoPreviewEl.find('.title').html(preview[0] || "&nbsp;");
-    seoPreviewEl.find('.link > span').html(preview[2] || "&nbsp;");
-    seoPreviewEl.find('.description').html(preview[1] || "&nbsp;");
+    seoPreviewEl.find('.title').html(preview[0] || "Beatiful Page");
+    seoPreviewEl.find('.link > span').html(preview[2] || "beatiful-page");
+    seoPreviewEl.find('.description').html(preview[1] || "This is a beatiful page");
   };
   $("input[name='title'], textarea[name='description'], input[name='slug']").on('input', function () {
     $(this).data('dirty', true);
     renderSeoPreview();
+  }).each(function(){
+    const nameInput = $("[name='name']");
+    switch ($(this).attr('name')) {
+      case 'title':
+        if (nameInput.val() !== $(this).val()) $(this).data('dirty', true);
+        break;
+      case 'description':
+        if ($("[name='body']").val() !== $(this).val()) $(this).data('dirty', true);
+        break;
+      case 'slug':
+        if (getSlug(nameInput.val()) !== $(this).val()) $(this).data('dirty', true);
+        break;
+    }
   });
   renderSeoPreview();
 
+  // Check in edit mode
+  if ($("[name='id']").length) {
+    $("input[name='slug']").data('dirty', true);
+  }
+
   // Set seo mode as
-  setSeoMode('auto');
+  setSeoMode($("[name='type']").val() === 'simple' ? 'auto' : 'manual');
 
 })($, window, getSlug);
 <?php $this->Html->scriptEnd(); ?>

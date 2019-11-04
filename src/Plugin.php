@@ -43,6 +43,8 @@ class Plugin extends BasePlugin
 			/** BO Pages */
 			'backoffice:pages.index' => [ 'method' => 'GET', 'template' => '/pages', 'action' => [ 'controller' => 'Pages', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
 			'backoffice:pages.create' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/pages/create', 'action' => [ 'controller' => 'Pages', 'action' => 'create', 'plugin' => 'BackOffice' ] ],
+			'backoffice:pages.update' => [ 'method' => [ 'GET', 'PUT' ], 'template' => '/pages/:id', 'action' => [ 'controller' => 'Pages', 'action' => 'update', 'plugin' => 'BackOffice' ] ],
+			'backoffice:pages.delete' => [ 'method' => 'GET', 'template' => '/pages/:id/delete', 'action' => [ 'controller' => 'Pages', 'action' => 'delete', 'plugin' => 'BackOffice' ] ],
 			/** BO Auth */
 			'backoffice:auth.login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
 			'backoffice:auth.logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ]
