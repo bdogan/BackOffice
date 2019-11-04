@@ -4,7 +4,6 @@ namespace BackOffice\Controller;
 use BackOffice\Model\Entity\Page;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
-use Cake\I18n\Time;
 
 /**
  * Pages Controller
@@ -37,6 +36,8 @@ class PagesController extends AppController
 		$page = new Page();
 
 		if ($this->request->is('post')) {
+			// Set published date
+			$page->set('published_after', $this->request->getData('published_after', null));
 			// Data -> Entity
 			$this->Pages->patchEntity( $page, $this->request->getData() );
 			// Save to database
@@ -67,6 +68,8 @@ class PagesController extends AppController
 		}
 		// Check Request for POST
 		if ($this->request->is('put')) {
+			// Set published date
+			$page->set('published_after', $this->request->getData('published_after', null));
 			// Data -> Entity
 			$this->Pages->patchEntity($page, $this->request->getData());
 			// Save to database

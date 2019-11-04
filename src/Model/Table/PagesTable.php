@@ -74,7 +74,7 @@ class PagesTable extends Table
             ->scalar('slug')
             ->maxLength('slug', 100)
             ->requirePresence('slug', 'create')
-            ->notEmptyString('slug');
+            ->allowEmptyString('slug');
 
         $validator
             ->scalar('title')

@@ -395,6 +395,15 @@ table.card-body thead th {
     border: inherit;
 }
 
+/** No Data */
+.no_data {
+    width: 100%;
+    padding: 100px 0;
+    text-align: center;
+    background-color: #9CC3E1;
+    border-radius: 4px;
+}
+
 /* Rules for sizing the icon. */
 .material-icons-round.md-16 { font-size: 16px; }
 .material-icons-round.md-18 { font-size: 18px; }

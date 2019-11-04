@@ -130,7 +130,7 @@
     const preview = [ $("input[name='title']").val().trim(), $("textarea[name='description']").val().trim(), $("input[name='slug']").val().trim() ];
     seoPreviewEl[preview.join('').length > 0 ? 'show' : 'hide']().prev()[preview.join('').length > 0 ? 'hide' : 'show']();
     seoPreviewEl.find('.title').html(preview[0] || "Beatiful Page");
-    seoPreviewEl.find('.link > span').html(preview[2] || "beatiful-page");
+    seoPreviewEl.find('.link > span').html(preview[2] || "&nbsp;");
     seoPreviewEl.find('.description').html(preview[1] || "This is a beatiful page");
   };
   $("input[name='title'], textarea[name='description'], input[name='slug']").on('input', function () {

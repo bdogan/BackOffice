@@ -2,6 +2,7 @@
 
 namespace BackOffice;
 
+use BackOffice\Model\Table\PagesTable;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
@@ -9,6 +10,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
+use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
@@ -21,6 +23,7 @@ class Plugin extends BasePlugin
 
 	use InstanceConfigTrait;
 	use EventDispatcherTrait;
+	use LocatorAwareTrait;
 
 	/**
 	 * @var array
@@ -154,7 +157,7 @@ class Plugin extends BasePlugin
 	 */
 	public function routes( $routes )
 	{
-		// Build routes
+		// Build back office routes
 		$routes->scope(
 			$this->getConfig('rootPath'),
 			function (RouteBuilder $routes) {
@@ -164,6 +167,10 @@ class Plugin extends BasePlugin
 				}
 			}
 		);
+
+		// Load pages
+		//pr($this->getTableLocator()->get('Pages')->find()->toArray());
+
 	}
 
 	/**
