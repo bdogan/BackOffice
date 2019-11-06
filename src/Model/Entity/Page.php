@@ -8,13 +8,13 @@ use Cake\ORM\Entity;
  *
  * @property int $id
  * @property string $name
+ * @property string $alias
  * @property string $template
  * @property string $layout
  * @property string|null $body
  * @property \Cake\I18n\FrozenTime|null $published_after
  * @property string $slug
  * @property string $title
- * @property string $canonical
  * @property string|null $description
  * @property string $type
  * @property bool $is_system_default

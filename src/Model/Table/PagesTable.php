@@ -57,7 +57,14 @@ class PagesTable extends Table
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
 
-        $validator
+	    $validator
+		    ->scalar('alias')
+		    ->maxLength('alias', 50)
+		    ->requirePresence('alias', 'create')
+		    ->allowEmptyString('alias');
+
+
+	    $validator
             ->scalar('template')
             ->maxLength('template', 100)
             ->notEmptyString('template');
