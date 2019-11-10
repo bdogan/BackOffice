@@ -11,6 +11,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
+use Cake\Http\ServerRequest;
 use Cake\I18n\Time;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\RouteBuilder;
@@ -71,7 +72,7 @@ class Plugin extends BasePlugin
 		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'backoffice:dashboard.index' ] ],
 		'pages' => [
 			/** Default pages */
-			'main.index' => [ 'method' => 'GET', 'data' => [ 'slug' => '', 'body' => 'Main page body', 'title' => 'Main Page', 'layout' => 'default', 'template' => 'page' ], 'frozen' => [ 'slug' ], 'action' => [ 'prefix' => 'Frontend', 'controller' => 'Pages', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			'main.index' => [ 'method' => 'GET', 'data' => [ 'slug' => '/', 'body' => 'Main page body', 'title' => 'Main Page', 'layout' => 'default', 'template' => 'page' ], 'frozen' => [ 'slug' ], 'action' => [ 'prefix' => 'Frontend', 'controller' => 'Pages', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
 		],
 		'routes' => [
 			/** BO Mandatory */
@@ -164,6 +165,23 @@ class Plugin extends BasePlugin
 	}
 
 	/**
+	 * Returns active page
+	 *
+	 * @param ServerRequest $request
+	 * @return array|bool|mixed
+	 */
+	public function getActivePage(ServerRequest $request)
+	{
+		$matchedRoute = $request->getParam('_matchedRoute');
+		foreach ($this->getPages() as $key => $page) {
+			if ($page['data']['slug'] === $matchedRoute) {
+				return [ '_key' => $key ] + $page;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Get menu by given zone
 	 *
 	 * @param $zone
@@ -197,7 +215,11 @@ class Plugin extends BasePlugin
 		// Merge config
 		foreach ($query as $page) {
 			if (!empty($page->alias) && isset($staticPages[$page->alias])) {
-				$staticPages[$page->alias]['data'] = array_merge_recursive($staticPages[$page->alias]['data'], $page->toArray());
+				$staticPages[$page->alias]['data'] = array_merge($staticPages[$page->alias]['data'], $page->toArray());
+			} else {
+				$staticPages['page:id:' . $page->id] = array_merge($this->_defaultPageSettings, [
+					'data' => $page->toArray()
+				]);
 			}
 		}
 
@@ -252,7 +274,7 @@ class Plugin extends BasePlugin
 			}
 		);
 
-		// Load pages
+		// Load frontend pages
 		$routes->scope(
 			'/',
 			function (RouteBuilder $routes) {

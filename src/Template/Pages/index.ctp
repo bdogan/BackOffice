@@ -17,7 +17,7 @@
           <?php /** @var \Cake\ORM\Entity $item */foreach ($items as $item): ?>
             <tr>
               <td><?= h($item->get('name')); ?></td>
-              <td>/<?= $item->get('slug'); ?></td>
+              <td><?= (strpos($item->get('slug'), '/') === 0 ? '' : '/') . $item->get('slug'); ?></td>
               <td><?= !!$item->get('published_after') ? $item->get('published_after')->i18nFormat() : "<p class='text-danger'>Not published</p>"; ?></td>
               <td class="actions">
                 <div class="btn-group btn-group-sm" role="group" aria-label="First group">

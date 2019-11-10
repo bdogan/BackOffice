@@ -60,9 +60,7 @@ class PagesTable extends Table
 	    $validator
 		    ->scalar('alias')
 		    ->maxLength('alias', 50)
-		    ->requirePresence('alias', 'create')
 		    ->allowEmptyString('alias');
-
 
 	    $validator
             ->scalar('template')
