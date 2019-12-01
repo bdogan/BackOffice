@@ -2,6 +2,7 @@
 
 namespace BackOffice;
 
+use BackOffice\Middleware\PageMiddleware;
 use BackOffice\Model\Entity\Page;
 use BackOffice\Model\Table\PagesTable;
 use Cake\Core\BasePlugin;
@@ -316,7 +317,7 @@ class Plugin extends BasePlugin
 			'/',
 			function (RouteBuilder $routes) {
 				foreach ($this->getPages() as $key => $config) {
-					$routes->connect($config['data']['slug'], $config['action'], [ '_name' => $key ])->setMethods((array) $config['method']);
+					$routes->connect($config['data']['slug'], $config['action'], [ '_name' => $config['data']['name'] ])->setMethods((array) $config['method']);
 				}
 			}
 		);
@@ -333,6 +334,11 @@ class Plugin extends BasePlugin
 		$middleware->add(new EncryptedCookieMiddleware(
 			[ 'UPLR', 'BOSK' ],
 			Configure::readOrFail('Security.cookieKey')
+		));
+
+		$middleware->add(new PageMiddleware(
+			$this->getConfig('rootPath'),
+			$this->getPages()
 		));
 
 		// Return middleware

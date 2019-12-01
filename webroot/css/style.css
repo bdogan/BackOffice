@@ -201,13 +201,13 @@ header {
 /** Breadcrumb **/
 header .br {
     padding-top: 35px;
-    margin-bottom: 10px !important;
+    margin-bottom: 0 !important;
 }
 
 header .br a {
     margin-left: -4px;
     padding: 4px 0;
-    display: block;
+    display: inline-block;
     color: var(--text-muted-color);
 }
 
@@ -257,7 +257,7 @@ header .pa .primary {
     position: absolute;
     right: 0;
     text-align: right;
-    bottom: 15px;
+    top: -40px;
 }
 
 header .pa .primary a i {
@@ -352,7 +352,6 @@ table.card-body thead th {
 .material-icons-round {
     overflow: hidden;
     max-width: 24px;
-
 }
 
 /** SEO Preview **/

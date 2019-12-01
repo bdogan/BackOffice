@@ -1,5 +1,5 @@
 <?php $this->Page->addCrumb('Pages', [ '_name' => 'backoffice:pages.index' ]); ?>
-<?php $this->Page->addCrumb($page->id ? 'Edit Page' : 'New Page'); ?>
+<?php $this->Page->addCrumb($page->id ? 'Edit ' . $page->name : 'New Page'); ?>
 
 <?php $this->Page->addAction('primary', [ 'title' => 'Save', 'class' => 'btn btn-success', 'icon' => 'save', 'type' => 'button', 'form' => 'page_form' ]); ?>
 <?php if ($page->id) $this->Page->addAction('secondary', [ 'title' => 'Open', 'icon' => 'open_in_new', 'href' => $page->slug, 'target' => '_blank' ]); ?>
