@@ -6,7 +6,6 @@ use BackOffice\Model\Entity\Page;
 use BackOffice\Model\Table\PagesTable;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
-use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -17,6 +16,7 @@ use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use Cake\Utility\Text;
 
 /**
  * Plugin for BackOffice
@@ -27,6 +27,32 @@ class Plugin extends BasePlugin
 	use InstanceConfigTrait;
 	use EventDispatcherTrait;
 	use LocatorAwareTrait;
+
+	/**
+	 * Crud methods
+	 */
+	const CRUD_METHODS = [
+		'list' => [
+			'method' => 'GET',
+			'action' => 'index',
+			'template' => ':template'
+		],
+		'create' => [
+			'method' => [ 'GET', 'POST' ],
+			'action' => 'create',
+			'template' => ':template/create'
+		],
+		'update' => [
+			'method' => [ 'GET', 'PUT' ],
+			'action' => 'update',
+			'template' => ':template/:id'
+		],
+		'delete' => [
+			'method' => 'GET',
+			'action' => 'delete',
+			'template' => ':template/:id/delete'
+		]
+	];
 
 	/**
 	 * @var null|array PageList Memory Cache
@@ -113,16 +139,27 @@ class Plugin extends BasePlugin
 	];
 
 	/**
+	 * Plugin constructor.
+	 *
+	 * @param array $options
+	 */
+	public function __construct( array $options = [] ) {
+
+		// Set options
+		$this->setConfig($options);
+
+		// Parent constructor
+		parent::__construct( $options );
+
+	}
+
+	/**
 	 * @inheritDoc
 	 *
 	 * @param PluginApplicationInterface $app
 	 */
 	public function bootstrap( PluginApplicationInterface $app )
 	{
-		// Load config file
-		$configLoader = new PhpConfig();
-		$this->setConfig($configLoader->read('backoffice'));
-
 		// Set config
 		Configure::write('BackOffice', $this);
 
@@ -300,5 +337,81 @@ class Plugin extends BasePlugin
 
 		// Return middleware
 		return $middleware;
+	}
+
+	/**
+	 * Adds a new route
+	 *
+	 * @param $name
+	 * @param $options
+	 */
+	public function addRoute($name, $options = [])
+	{
+		$this->setConfig([ 'routes.' . $name => $options ]);
+	}
+
+	/**
+	 * Adds a new route sets
+	 *
+	 * @param array $routes
+	 */
+	public function addRoutes($routes = [])
+	{
+		foreach ($routes as $name => $options) {
+			$this->addRoute($name, $options);
+		}
+	}
+
+	/**
+	 * Adds a new menu
+	 *
+	 * @param $section
+	 * @param $name
+	 * @param $menu
+	 */
+	public function addMenu($name, $menu, $zone = '_default')
+	{
+		$menu += [ 'order' => 1 ];
+		$this->setConfig('menu.' . $zone . '.' . $name, $menu);
+	}
+
+	/**
+	 * Adda a menu sets
+	 *
+	 * @param $section
+	 * @param $menus
+	 */
+	public function addMenus($menus, $zone = '_default')
+	{
+		foreach ($menus as $name => $menu) {
+			$this->addMenu($name, $menu, $zone);
+		}
+	}
+
+	/**
+	 * Add crud route
+	 *
+	 * @param $name
+	 * @param $modelClass
+	 * @param $template
+	 * @param array $options
+	 */
+	public function addCrud($name, $modelClass, $template, $options = [])
+	{
+		foreach (self::CRUD_METHODS as $methodName => $method) {
+			// Check if disable
+			if (Hash::get($options, $methodName) === false) continue;
+			$this->addRoute('backoffice:crud:' . $name . ':' . $methodName, [
+				'method' => $method['method'],
+				'template' => Text::insert($method['template'], [ 'template' => $template ]),
+				'options' => $options,
+				'action' => [
+					'controller' => 'Crud',
+					'action' => $method['action'],
+					'plugin' => 'BackOffice',
+					'modelClass' => $modelClass
+				]
+			]);
+		}
 	}
 }

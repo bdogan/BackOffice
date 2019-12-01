@@ -106,6 +106,7 @@ class PageHelper extends Helper
 	 */
     public function icon($name, $size = null)
     {
+    	if (!$name) return '';
     	return $this->Html->tag('i', $name, [ 'class' => 'material-icons-round ' . $size ]);
     }
 

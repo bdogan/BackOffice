@@ -49,7 +49,9 @@ class PagesController extends FrontendAppController
 		$this->viewBuilder()->setTemplatePath('Content');
 
 		// Set Layout path
-		$this->viewBuilder()->setLayoutPath(null);
+		//$this->viewBuilder()->setLayoutPath(null);
+
+		$this->viewBuilder()->enableAutoLayout(false);
 
 		// Set layout
 		$this->viewBuilder()->setLayout(Hash::get($this->activePage, 'data.layout', 'default'));

@@ -1,7 +1,11 @@
 <?php $this->Page->addCrumb('Pages', [ '_name' => 'backoffice:pages.index' ]); ?>
-<?php $this->Page->addCrumb('New Page'); ?>
+<?php $this->Page->addCrumb($page->id ? 'Edit Page' : 'New Page'); ?>
 
-<?= $this->Form->create($page, [ 'class' => 'row' ]) ?>
+<?php $this->Page->addAction('primary', [ 'title' => 'Save', 'class' => 'btn btn-success', 'icon' => 'save', 'type' => 'button', 'form' => 'page_form' ]); ?>
+<?php if ($page->id) $this->Page->addAction('secondary', [ 'title' => 'Open', 'icon' => 'open_in_new', 'href' => $page->slug, 'target' => '_blank' ]); ?>
+
+
+<?= $this->Form->create($page, [ 'class' => 'row', 'id' => 'page_form' ]) ?>
 <?= $page->id ? $this->Form->hidden('id', [ 'value' => $page->id ]): ''; ?>
 <?= $this->Form->hidden('type'); ?>
 <div class="col-12">
@@ -22,14 +26,14 @@
           <p class="card-text text-muted font-weight-light">Add a title and description to see how this product might appear in a search engine listing.</p>
           <div class="seo_preview" style="display: none;">
             <p class="title"></p>
-            <p class="link"><?= $this->Url->build('/', [ 'fullBase' => true ]); ?><span></span></p>
+            <p class="link"><?= rtrim($this->Url->build('/', [ 'fullBase' => true ]), '/'); ?><span></span></p>
             <p class="description"></p>
           </div>
         </div>
         <div class="card-body border-top" data-visible="seoMode" style="display: none;">
           <?= $this->Form->control('title', [ 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
           <?= $this->Form->control('description', [ 'type' => 'textarea', 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
-          <?= $this->Form->control('slug', [ 'container' => [ 'class' => 'col-12 p-0 mb-3' ], 'prefix' => $this->Url->build('/', [ 'fullBase' => true ]) ] ); ?>
+          <?= $this->Form->control('slug', [ 'container' => [ 'class' => 'col-12 p-0 mb-3' ], 'prefix' => rtrim($this->Url->build('/', [ 'fullBase' => true ]), '/') ] ); ?>
         </div>
       </div>
     </div>
@@ -108,7 +112,7 @@
         // Page Title
         if (!titleTarget.data('dirty')) titleTarget.val(value.slice(0, 100));
         // Slug
-        if (!slugTarget.data('dirty')) slugTarget.val(getSlug(value).slice(0, 100));
+        if (!slugTarget.data('dirty')) slugTarget.val('/' + getSlug(value).slice(0, 100));
         break;
       // Body source
       case 'body':

@@ -25,12 +25,13 @@
         <div class="row">
             <div class="col-6 secondary">
                 <?php foreach ($this->Page->getActions('secondary') as $item) { ?>
-                    <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) : '') . $item['title'], $item['action'], [ 'escape' => false ]); ?>
+
+                    <?= $this->Html->tag(\Cake\Utility\Hash::get($item, 'type', 'a'), $this->Page->icon(\Cake\Utility\Hash::get($item, 'icon')) . $item['title'], array_filter($item, function ($k){ return !in_array($k, [ 'title', 'type', 'icon' ]); }, ARRAY_FILTER_USE_KEY) + [ 'escape' => false ]) ?>
                 <?php } ?>
             </div>
             <div class="col-6 primary">
                 <?php foreach ($this->Page->getActions('primary') as $item) { ?>
-                    <?= $this->Html->link((isset($item['icon']) ? $this->Html->tag('i', $item['icon'], [ 'class' => 'material-icons-round' ]) : '') . $item['title'], $item['action'], [ 'class' => 'btn btn-primary', 'escape' => false ]); ?>
+	                  <?= $this->Html->tag(\Cake\Utility\Hash::get($item, 'type', 'a'), $this->Page->icon(\Cake\Utility\Hash::get($item, 'icon')) . $item['title'], array_filter($item, function ($k){ return !in_array($k, [ 'title', 'type', 'icon' ]); }, ARRAY_FILTER_USE_KEY) + [ 'class' => 'btn btn-primary', 'escape' => false ]) ?>
                 <?php } ?>
             </div>
         </div>

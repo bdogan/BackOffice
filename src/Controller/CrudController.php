@@ -4,6 +4,7 @@ namespace BackOffice\Controller;
 use Cake\Collection\Collection;
 use Cake\Event\Event;
 use Cake\Http\Exception\NotFoundException;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
@@ -116,7 +117,7 @@ class CrudController extends AppController
 
 		// Add create action
 		if ($appView->view === 'index') {
-			$appView->Page->addAction('primary', [ 'title' => 'New ' .  Inflector::singularize($this->model->getAlias()), 'action' => [ 'action' => 'create', 'modelClass' => $this->modelClass ] ]);
+			$appView->Page->addAction('primary', [ 'title' => 'New ' .  Inflector::singularize($this->model->getAlias()), 'href' => Router::url([ 'action' => 'create', 'modelClass' => $this->modelClass ]) ]);
 		}
 
 		// Add crumb on update & create

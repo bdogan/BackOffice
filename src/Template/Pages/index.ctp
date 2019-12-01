@@ -1,5 +1,5 @@
 <?php $this->Page->addCrumb('Pages'); ?>
-<?php $this->Page->addAction('primary', [ 'title' => 'New Page', 'action' => [ 'action' => 'create' ] ]); ?>
+<?php $this->Page->addAction('primary', [ 'title' => 'New Page', 'href' => \Cake\Routing\Router::url([ 'action' => 'create' ]) ]); ?>
 <div class="row mb-4">
 	<div class="col-12">
 	  <?php if ($items->count()): ?>
@@ -21,8 +21,9 @@
               <td><?= !!$item->get('published_after') ? $item->get('published_after')->i18nFormat() : "<p class='text-danger'>Not published</p>"; ?></td>
               <td class="actions">
                 <div class="btn-group btn-group-sm" role="group" aria-label="First group">
-                  <?= $this->Html->link($this->Page->icon('edit'), [ 'id' => $item->id, 'action' => 'update' ], [ 'escape' => false, 'class' => 'btn btn-dark', 'title' => __('Edit'), 'data-toggle' => 'tooltip' ]); ?>
-                  <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->id, 'action' => 'delete' ], [ 'escape' => false, 'class' => 'btn btn-dark ' . ($item->get('is_system_default') ? 'disabled' : ''), 'data-confirm' => 'Page `' . $item->name . '` will be deleted.', 'title' => __('Delete'), 'data-toggle' => 'tooltip' ]); ?>
+	                <?= $this->Html->link($this->Page->icon('open_in_new'), $item->slug, [ 'escape' => false, 'class' => 'btn btn-info', 'title' => __('Open'), 'data-toggle' => 'tooltip', 'target' => '_blank' ]); ?>
+                    <?= $this->Html->link($this->Page->icon('edit'), [ 'id' => $item->id, 'action' => 'update' ], [ 'escape' => false, 'class' => 'btn btn-primary', 'title' => __('Edit'), 'data-toggle' => 'tooltip' ]); ?>
+                  <?= $this->Html->link($this->Page->icon('delete'), [ 'id' => $item->id, 'action' => 'delete' ], [ 'escape' => false, 'class' => 'btn btn-danger ' . ($item->get('is_system_default') ? 'disabled' : ''), 'data-confirm' => 'Page `' . $item->name . '` will be deleted.', 'title' => __('Delete'), 'data-toggle' => 'tooltip' ]); ?>
                 </div>
               </td>
             </tr>
