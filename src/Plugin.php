@@ -97,6 +97,9 @@ class Plugin extends BasePlugin
 	private $_defaultConfig = [
 		'rootPath' => '/_admin',
 		'main_page' => [ 'title' => 'Dashboard', 'action' => [ '_name' => 'backoffice:dashboard.index' ] ],
+		'storage' => [
+
+		],
 		'pages' => [
 			/** Default pages */
 			'main.index' => [ 'method' => 'GET', 'data' => [ 'slug' => '/', 'body' => 'Main page body', 'title' => 'Main Page', 'layout' => 'default', 'template' => 'page' ], 'frozen' => [ 'slug' ], 'action' => [ 'prefix' => 'Frontend', 'controller' => 'Pages', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
@@ -114,6 +117,8 @@ class Plugin extends BasePlugin
 			/** BO Auth */
 			'backoffice:auth.login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
 			'backoffice:auth.logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ],
+			/** BO File Browser */
+			'backoffice:file_browser.index' => [ 'method' => 'GET', 'template' => '/file_browser', 'action' => [ 'controller' => 'FileBrowser', 'action' => 'index', 'plugin' => 'BackOffice' ] ]
 		],
 		'auth' => [
 			'authenticate' => [
@@ -132,6 +137,7 @@ class Plugin extends BasePlugin
 				'pages' => [ 'title' => 'Pages', 'icon' => 'library_books', 'action' => [ '_name' => 'backoffice:pages.index' ], 'order' => -1, 'children' => [
 					[ 'title' => 'New Page', 'action' => [ '_name' => 'backoffice:pages.create' ] ],
 				] ],
+				'file_browser' => [ 'title' => 'File Browser', 'exact' => true, 'icon' => 'file_copy', 'action' => [ '_name' => 'backoffice:file_browser.index' ], 'order' => 99999 ],
 				'definitions' => [ 'title' => 'Definitions', 'icon' => 'dvr', 'action' => [ '_name' => 'backoffice:definitions.index' ], 'order' => 99999, 'children' => [
 
 				] ],
