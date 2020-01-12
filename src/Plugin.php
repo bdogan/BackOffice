@@ -9,6 +9,7 @@ use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
+use Cake\Datasource\ConnectionManager;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Http\Middleware\EncryptedCookieMiddleware;
 use Cake\Http\ServerRequest;
@@ -160,6 +161,19 @@ class Plugin extends BasePlugin
 
 	}
 
+	public function tableExists($table, $scope = 'default')
+    {
+        try {
+            $connection = ConnectionManager::get($scope);
+            if ($connection->connect()) {
+                $result = $connection->execute('SELECT * FROM ' . $table . ' LIMIT 1');
+                return $result->count() > 0;
+            }
+        } catch (\Exception $connectionError) {
+            return false;
+        }
+    }
+
 	/**
 	 * @inheritDoc
 	 *
@@ -171,7 +185,9 @@ class Plugin extends BasePlugin
 		Configure::write('BackOffice', $this);
 
 		// Set pages table
-		$this->_pages = $this->getTableLocator()->get('BackOffice.Pages');
+        if ($this->tableExists('pages')) {
+            $this->_pages = $this->getTableLocator()->get('BackOffice.Pages');
+        }
 
 		// Fire event
 		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
@@ -246,6 +262,9 @@ class Plugin extends BasePlugin
 		 * @var \BackOffice\Model\Entity\Page $page
 		 * @var array $staticPages
 		 */
+
+		// Check pages
+        if (!$this->_pages) return [];
 
 		// Check memory
 		if ($this->_pageList !== null) return $this->_pageList;
