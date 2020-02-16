@@ -3,6 +3,7 @@
 namespace BackOffice\Controller\Frontend;
 
 use App\Controller\AppController;
+use BackOffice\View\FrontendView;
 use Cake\Core\Configure;
 
 /**
@@ -27,7 +28,8 @@ class FrontendAppController extends AppController
 	{
 		// Set back office
 		$this->BackOffice = Configure::read('BackOffice');
-
+		// Set view class
+		$this->viewBuilder()->setClassName(FrontendView::class);
 	}
 
 }

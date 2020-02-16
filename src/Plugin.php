@@ -4,7 +4,10 @@ namespace BackOffice;
 
 use BackOffice\Middleware\PageMiddleware;
 use BackOffice\Model\Entity\Page;
+use BackOffice\Model\Entity\Theme;
 use BackOffice\Model\Table\PagesTable;
+use Cake\Cache\Cache;
+use Cake\Cache\Engine\RedisEngine;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
@@ -66,9 +69,29 @@ class Plugin extends BasePlugin
 	private $_pages;
 
 	/**
+	 * @var \BackOffice\Model\Table\ThemesTable
+	 */
+	private $_themes;
+
+	/**
+	 * @var \BackOffice\Model\Table\ThemeTemplatesTable
+	 */
+	private $_theme_templates;
+
+	/**
+	 * @var Theme;
+	 */
+	private $_active_theme;
+
+	/**
 	 * @var array
 	 */
 	private $_undefinedAction = [ 'controller' => 'UndefinedAction', 'action' => 'index', 'plugin' => 'BackOffice' ];
+
+	/**
+	 * @var array
+	 */
+	private $_defaultTheme = [ 'name' => 'Varsayılan', 'alias' => 'default' ];
 
 	/**
 	 * @var array Default Page Settings
@@ -167,11 +190,24 @@ class Plugin extends BasePlugin
 	 */
 	public function bootstrap( PluginApplicationInterface $app )
 	{
+		// Set cache config
+		Cache::setConfig('template', [
+			'className' => RedisEngine::class,
+			'duration' => '+999 days',
+			'groups' => [ 'backoffice' ],
+			'prefix' => 'bo_template_',
+		] + Configure::read('Redis', []));
+
 		// Set config
 		Configure::write('BackOffice', $this);
 
-		// Set pages table
+		// Set tables
 		$this->_pages = $this->getTableLocator()->get('BackOffice.Pages');
+		$this->_themes = $this->getTableLocator()->get('BackOffice.Themes');
+		$this->_theme_templates = $this->getTableLocator()->get('BackOffice.ThemeTemplates');
+
+		// Add twig view plugin
+		$app->addPlugin('WyriHaximus/TwigView');
 
 		// Fire event
 		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
@@ -206,6 +242,55 @@ class Plugin extends BasePlugin
 	{
 		$menu += [ 'exact' => false ];
 		return $menu['exact'] ? Router::url($menu['action']) === Router::url(null) : strpos(Router::url(null), Router::url($menu['action'])) === 0;
+	}
+
+	/**
+	 * @return array|\BackOffice\Model\Entity\Theme|\Cake\Datasource\EntityInterface|null
+	 */
+	public function getActiveTheme($cached = true)
+	{
+		if ($cached === true && $this->_active_theme) return $this->_active_theme;
+
+		/** @var \BackOffice\Model\Entity\Theme $activeTheme */
+		$activeTheme = $this->_themes->find()->where([ 'is_active' => 1 ])->first();
+
+		// Check active theme
+		if (!$activeTheme) {
+
+			$activeTheme = $this->getTheme('default');
+
+			if (!$activeTheme) {
+				$activeTheme = new Theme();
+				$this->_themes->patchEntity($activeTheme, $this->_defaultTheme + [ 'is_active' => true ]);
+			}
+
+			$activeTheme->set('is_active', true);
+			$this->_themes->save($activeTheme);
+		}
+
+		return $this->_active_theme = $activeTheme;
+	}
+
+	/**
+	 * @param $type
+	 * @param $name
+	 *
+	 * @return \BackOffice\Model\Entity\ThemeTemplate|null
+	 */
+	public function getTemplate($type, $name)
+	{
+		$activeTheme = $this->getActiveTheme();
+		return $this->_theme_templates->find()->where([ 'theme_id' => $activeTheme->id, 'type' => $type, 'name' => $name ])->first();
+	}
+
+	/**
+	 * @param $alias
+	 *
+	 * @return array|\Cake\Datasource\EntityInterface|null
+	 */
+	public function getTheme($alias)
+	{
+		return $this->_themes->find()->where([ 'alias' => $alias ])->first();
 	}
 
 	/**

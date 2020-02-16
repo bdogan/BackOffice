@@ -61,8 +61,8 @@ class PageMiddleware
 	        $request = $request->withParam('page', $activePage);
 
 		    // Listen events
-	        EventManager::instance()->on('Controller.beforeRender', [ $this, 'onControllerBeforeRender' ]);
-		    EventManager::instance()->on('View.beforeRender', [ $this, 'onViewBeforeRender' ]);
+	        //EventManager::instance()->on('Controller.beforeRender', [ $this, 'onControllerBeforeRender' ]);
+		    //EventManager::instance()->on('View.beforeRender', [ $this, 'onViewBeforeRender' ]);
 	    }
     	return $next($request, $response);
     }
@@ -118,12 +118,12 @@ class PageMiddleware
     	$controller = $event->subject;
 
     	// Set Content Path
-	    $controller->viewBuilder()->setTemplatePath($this->contentPath);
+	    //$controller->viewBuilder()->setTemplatePath($this->contentPath);
 
     	// Get active page
 	    $page = $controller->request->getParam('page');
 
-		$controller->setPlugin(null);
+		//$controller->setPlugin(null);
 
 	    // Set layout
 	    $controller->viewBuilder()->setLayout(Hash::get($page, 'data.layout', 'default'));
