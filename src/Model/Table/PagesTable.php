@@ -1,9 +1,12 @@
 <?php
 namespace BackOffice\Model\Table;
 
-use Cake\ORM\Query;
+use BackOffice\Model\Entity\Page;
+use Cake\Cache\Cache;
+use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 
 /**
@@ -22,7 +25,19 @@ use Cake\Validation\Validator;
  */
 class PagesTable extends Table
 {
-    /**
+
+	/**
+	 * @return array
+	 */
+	public function implementedEvents()
+	{
+		return parent::implementedEvents() + [
+			'Model.beforeSave' => 'beforeSave',
+			'Model.beforeDelete' => 'beforeDelete'
+		];
+	}
+
+	/**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
@@ -37,6 +52,8 @@ class PagesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
+
+        $this->getEventManager()->on('Model.beforeSave', [ $this, 'beforeSave' ]);
     }
 
     /**
@@ -120,4 +137,29 @@ class PagesTable extends Table
     	$rules->add($rules->isUnique(['slug']));
 	    return $rules;
     }
+
+	/**
+	 * @param \Cake\Event\Event $event
+	 * @param \BackOffice\Model\Entity\Page $page
+	 * @param \ArrayObject $options
+	 */
+    public function beforeSave(Event $event, Page $page, \ArrayObject $options)
+	{
+		if (!$page->alias) $page->alias = $page->alias();
+		Cache::delete('pages', 'bo_shared');
+	}
+
+	/**
+	 * @param \Cake\Event\Event $event
+	 * @param \BackOffice\Model\Entity\Page $page
+	 * @param \ArrayObject $options
+	 */
+	public function beforeDelete(Event $event, Page $page, \ArrayObject $options)
+	{
+		if ($page->is_system_default) {
+			$event->stopPropagation();
+			$event->setResult(false);
+		}
+	}
+
 }

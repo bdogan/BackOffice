@@ -2,12 +2,17 @@
 
 namespace BackOffice\View;
 
+use BackOffice\Lib\Twig\BackOfficeCache;
+use BackOffice\Lib\Twig\BackOfficeLoader;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\ORM\TableRegistry;
+use Cake\Event\Event;
 use Cake\Utility\Hash;
+use Cake\Utility\Security;
+use Cake\Utility\Text;
 use Cake\View\Exception\MissingLayoutException;
 use Cake\View\Exception\MissingTemplateException;
+use WyriHaximus\TwigView\Event\LoaderEvent;
 use WyriHaximus\TwigView\View\TwigView;
 
 /**
@@ -17,11 +22,6 @@ use WyriHaximus\TwigView\View\TwigView;
  */
 class FrontendView extends TwigView
 {
-
-	/**
-	 * Template
-	 */
-	const TEMPLATE_CACHE_DIR = CACHE . 'template';
 
 	/**
 	 * Types
@@ -65,10 +65,43 @@ class FrontendView extends TwigView
 	 */
 	public function initialize()
 	{
-		parent::initialize();
 		$this->backoffice = Configure::read('BackOffice');
 		$this->activeTheme = $this->backoffice->getActiveTheme();
 		$this->activePage = $this->backoffice->getActivePage($this->getRequest());
+
+		if ($this->activePage) {
+			$this->getEventManager()->on('View.beforeRender', [ $this, 'beforeRender' ]);
+			$this->getEventManager()->on(LoaderEvent::EVENT, [ $this, 'loader' ]);
+		}
+
+		Configure::write(self::ENV_CONFIG, [
+			'cache' => new BackOfficeCache(CACHE . 'twigView' . DS)
+		]);
+
+		parent::initialize();
+
+		$this->loadHelper('Html');
+		$this->loadHelper('Form');
+		$this->loadHelper('Flash');
+		$this->loadHelper('Url');
+	}
+
+	/**
+	 * @return \Twig\Loader\LoaderInterface
+	 */
+	public function loader(LoaderEvent $event)
+	{
+		$event->result = new BackOfficeLoader($this->backoffice, $this->activeTheme);
+	}
+
+	/**
+	 * @param \Cake\Event\Event $event
+	 *
+	 * @throws \Exception
+	 */
+	public function beforeRender(Event $event)
+	{
+		if ($this->activePage) $this->Blocks->set('page', $this->_render('Page.' . $this->activePage['data']->id));
 	}
 
 	/**
@@ -80,25 +113,7 @@ class FrontendView extends TwigView
 	protected function _getViewFileName( $name = null )
 	{
 		if (!$this->activePage || $name !== null) return parent::_getViewFileName($name);
-
-		$templateName = Hash::get($this->activePage, 'data.template');
-
-		$template = $this->backoffice->getTemplate(self::TEMPLATE_CONTENT_TYPE, $templateName);
-
-		if ($template) {
-			$path = self::TEMPLATE_CACHE_DIR . DS . $this->activeTheme->alias . DS . $template->type . DS;
-			if (!file_exists($path)) {
-				mkdir($path, 0777, true);
-			}
-			if (!file_exists($path . $template->name . TwigView::EXT)) {
-				file_put_contents($path . $template->name . TwigView::EXT, $template->content);
-			}
-			if (file_exists($path . $template->name . TwigView::EXT)) {
-				return $path . $template->name . TwigView::EXT;
-			}
-		}
-
-		throw new MissingTemplateException([ 'theme' => $this->activeTheme->alias, 'type' => self::TEMPLATE_CONTENT_TYPE, 'template' => $templateName ]);
+		return self::TEMPLATE_CONTENT_TYPE . '.' . Hash::get($this->activePage, 'data.template');
 	}
 
 	/**
@@ -110,32 +125,7 @@ class FrontendView extends TwigView
 	protected function _getLayoutFileName( $name = null )
 	{
 		if (!$this->activePage) return parent::_getLayoutFileName($name);
-
-		$layoutName = Hash::get($this->activePage, 'data.layout');
-		$path = self::TEMPLATE_CACHE_DIR . DS . $this->activeTheme->alias . DS . self::LAYOUT_CONTENT_TYPE . DS;
-
-		// From cache
-		if (file_exists($path . $layoutName . TwigView::EXT)) {
-			return $path . $layoutName . TwigView::EXT;
-		}
-
-
-		$layout = $this->backoffice->getTemplate(self::LAYOUT_CONTENT_TYPE, $layoutName);
-
-		if ($layout) {
-
-			if (!file_exists($path)) {
-				mkdir($path, 0775, true);
-			}
-			if (!file_exists($path . $layout->name . TwigView::EXT)) {
-				file_put_contents($path . $layout->name . TwigView::EXT, $layout->content);
-			}
-			if (file_exists($path . $layout->name . TwigView::EXT)) {
-				return $path . $layout->name . TwigView::EXT;
-			}
-		}
-
-		throw new MissingLayoutException([ 'theme' => $this->activeTheme->alias, 'type' => self::LAYOUT_CONTENT_TYPE, 'layout' => $layoutName ]);
+		return self::LAYOUT_CONTENT_TYPE  . '.' . Hash::get($this->activePage, 'data.layout');
 	}
 
 }

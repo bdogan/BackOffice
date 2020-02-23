@@ -8,6 +8,7 @@
           <thead>
             <tr>
               <th><?= $this->Paginator->sort('name') ?></th>
+              <th><?= $this->Paginator->sort('alias') ?></th>
               <th width="300px"><?= $this->Paginator->sort('slug') ?></th>
               <th width="150px"><?= $this->Paginator->sort('published_after') ?></th>
               <th></th>
@@ -17,6 +18,7 @@
           <?php /** @var \Cake\ORM\Entity $item */foreach ($items as $item): ?>
             <tr>
               <td><?= h($item->get('name')); ?></td>
+              <td><?= $item->alias(); ?></td>
               <td><?= (strpos($item->get('slug'), '/') === 0 ? '' : '/') . $item->get('slug'); ?></td>
               <td><?= !!$item->get('published_after') ? $item->get('published_after')->i18nFormat() : "<p class='text-danger'>Not published</p>"; ?></td>
               <td class="actions">

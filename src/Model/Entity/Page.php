@@ -47,4 +47,20 @@ class Page extends Entity
         'created' => true,
         'modified' => true
     ];
+
+	/**
+	 * @return mixed|string
+	 */
+    public function alias()
+	{
+		return $this->get('alias') ? $this->get('alias') : ('page:' . $this->id);
+	}
+
+	/**
+	 * @return \Cake\I18n\FrozenTime|null
+	 */
+	public function modified()
+	{
+		return $this->modified ? $this->modified : $this->created;
+	}
 }

@@ -30,4 +30,5 @@ class Theme extends Entity
         'is_active' => true,
         'theme_templates' => true
     ];
+
 }

@@ -101,7 +101,7 @@ class PagesController extends AppController
 
 		// Check is system default
 		if ($page->is_system_default) {
-			throw new BadRequestException('Specific page is System Default!');
+			throw new BadRequestException('Current page cannot be deleted');
 		}
 
 		$this->Pages->deleteOrFail($page);

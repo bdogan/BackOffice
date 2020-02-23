@@ -36,4 +36,21 @@ class ThemeTemplate extends Entity
         'modified' => true,
         'theme' => true
     ];
+
+	/**
+	 * @return string
+	 */
+	public function alias()
+	{
+		return strtolower('template:' . $this->type . ':' . $this->name . ':' . $this->id);
+	}
+
+	/**
+	 * @return \Cake\I18n\FrozenTime|null
+	 */
+	public function modified()
+	{
+		return $this->modified ? $this->modified : $this->created;
+	}
+
 }

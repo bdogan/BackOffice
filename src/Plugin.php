@@ -7,6 +7,7 @@ use BackOffice\Model\Entity\Page;
 use BackOffice\Model\Entity\Theme;
 use BackOffice\Model\Table\PagesTable;
 use Cake\Cache\Cache;
+use Cake\Cache\Engine\FileEngine;
 use Cake\Cache\Engine\RedisEngine;
 use Cake\Core\BasePlugin;
 use Cake\Core\Configure;
@@ -191,11 +192,18 @@ class Plugin extends BasePlugin
 	public function bootstrap( PluginApplicationInterface $app )
 	{
 		// Set cache config
-		Cache::setConfig('template', [
+		Cache::setConfig('bo_shared', [
 			'className' => RedisEngine::class,
 			'duration' => '+999 days',
+			'prefix' => 'bo_',
 			'groups' => [ 'backoffice' ],
-			'prefix' => 'bo_template_',
+			'fallback' => 'default'
+		] + Configure::read('Redis', []));
+		Cache::setConfig('bo_file', [
+			'className' => FileEngine::class,
+			'duration' => '+999 days',
+			'prefix' => 'bo_',
+			'groups' => [ 'backoffice' ]
 		] + Configure::read('Redis', []));
 
 		// Set config
@@ -207,7 +215,7 @@ class Plugin extends BasePlugin
 		$this->_theme_templates = $this->getTableLocator()->get('BackOffice.ThemeTemplates');
 
 		// Add twig view plugin
-		$app->addPlugin('WyriHaximus/TwigView');
+		$app->addPlugin('WyriHaximus/TwigView', [ 'bootstrap' => true ]);
 
 		// Fire event
 		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
@@ -251,8 +259,9 @@ class Plugin extends BasePlugin
 	{
 		if ($cached === true && $this->_active_theme) return $this->_active_theme;
 
-		/** @var \BackOffice\Model\Entity\Theme $activeTheme */
-		$activeTheme = $this->_themes->find()->where([ 'is_active' => 1 ])->first();
+		$activeTheme = $this->_themes->find()->where([ 'is_active' => 1 ]);
+		$activeTheme->cache('active_theme', 'bo_shared');
+		$activeTheme = $activeTheme->first();
 
 		// Check active theme
 		if (!$activeTheme) {
@@ -271,16 +280,20 @@ class Plugin extends BasePlugin
 		return $this->_active_theme = $activeTheme;
 	}
 
+
+
 	/**
 	 * @param $type
 	 * @param $name
 	 *
-	 * @return \BackOffice\Model\Entity\ThemeTemplate|null
+	 * @return array|\Cake\Datasource\EntityInterface|null
 	 */
 	public function getTemplate($type, $name)
 	{
 		$activeTheme = $this->getActiveTheme();
-		return $this->_theme_templates->find()->where([ 'theme_id' => $activeTheme->id, 'type' => $type, 'name' => $name ])->first();
+		$template = $this->_theme_templates->find()->where([ 'theme_id' => $activeTheme->id, 'type' => $type, 'name' => $name ]);
+		$template->cache(':theme:' . $activeTheme->id . ':template:' . $name, 'bo_shared');
+		return $template->first();
 	}
 
 	/**
@@ -311,6 +324,19 @@ class Plugin extends BasePlugin
 	}
 
 	/**
+	 * @param $id
+	 *
+	 * @return array|mixed|null
+	 */
+	public function getPage($id)
+	{
+		foreach ($this->getPages() as $key => $page) {
+			if ($page['data']->id === $id) return $page['data'];
+		}
+		return null;
+	}
+
+	/**
 	 * Get menu by given zone
 	 *
 	 * @param $zone
@@ -337,24 +363,24 @@ class Plugin extends BasePlugin
 
 		// Get db pages
 		$query = $this->_pages->find('all');
+		$query->cache('pages', 'bo_shared');
 
 		// Get static page definitions
 		$staticPages = $this->getConfig('pages', []);
 
 		// Merge config
 		foreach ($query as $page) {
-			if (!empty($page->alias) && isset($staticPages[$page->alias])) {
-				$staticPages[$page->alias]['data'] = array_merge($staticPages[$page->alias]['data'], $page->toArray());
-			} else {
-				$staticPages['page:id:' . $page->id] = array_merge($this->_defaultPageSettings, [
-					'data' => $page->toArray()
-				]);
+			if (!isset($staticPages[$page->alias()])) {
+				$staticPages[$page->alias()] = $this->_defaultPageSettings;
 			}
+			$this->_pages->patchEntity($page, array_merge(Hash::get($staticPages[$page->alias()], 'data', []), $page->toArray()));
+			$staticPages[$page->alias()]['data'] = $page;
 		}
 
 		// Foreach static pages
 		foreach ($staticPages as $key => $staticPage) {
-			if (!Hash::check($staticPage, 'data.id')) {
+			// Check has db record
+			if (!$staticPage['data'] instanceof Page) {
 				$page = new Page();
 				$this->_pages->patchEntity($page, array_merge($this->_defaultPageSettings['data'], $staticPage['data'], [
 					'name' => Hash::get($staticPage, 'data.name', Hash::get($staticPage, 'data.title', $this->_defaultPageSettings['data']['name'])),
@@ -364,7 +390,7 @@ class Plugin extends BasePlugin
 					'alias' => $key
 				]));
 				if ($this->_pages->save($page)) {
-					$staticPages[$key]['data'] = $page->toArray();
+					$staticPages[$key]['data'] = $page;
 				}
 			}
 		}
@@ -408,7 +434,8 @@ class Plugin extends BasePlugin
 			'/',
 			function (RouteBuilder $routes) {
 				foreach ($this->getPages() as $key => $config) {
-					$routes->connect($config['data']['slug'], $config['action'], [ '_name' => $config['data']['name'] ])->setMethods((array) $config['method']);
+					$alias = $config['data']['alias'] ? $config['data']['alias'] : ('page:' . $config['data']['id']);
+					$routes->connect($config['data']['slug'], $config['action'], [ '_name' => $alias ])->setMethods((array) $config['method']);
 				}
 			}
 		);
