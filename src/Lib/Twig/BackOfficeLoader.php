@@ -3,10 +3,8 @@
 namespace BackOffice\Lib\Twig;
 
 use BackOffice\Model\Entity\Page;
-use BackOffice\Model\Entity\Theme;
 use BackOffice\Plugin;
 use Cake\Utility\Text;
-use Twig\Error\LoaderError;
 use Twig\Loader\ExistsLoaderInterface;
 use Twig\Loader\LoaderInterface;
 use Twig\Loader\SourceContextLoaderInterface;
@@ -38,38 +36,22 @@ class BackOfficeLoader implements LoaderInterface, ExistsLoaderInterface, Source
 	/**
 	 * @param $path
 	 *
-	 * @return array
-	 */
-	private function splitPath($path)
-	{
-		if (strpos($path, '.') === false) $path = 'Content.' . $path;
-		$dotLocation = strpos($path, '.');
-		return [ substr($path, 0, $dotLocation), substr($path,$dotLocation + 1) ];
-	}
-
-	/**
-	 * @param $path
-	 *
 	 * @return \BackOffice\Model\Entity\ThemeTemplate|Page
 	 */
 	private function getTemplate($path)
 	{
 		if (isset($this->resolvedTemplates[$path])) return $this->resolvedTemplates[$path];
-		list($type, $page) = $this->splitPath($path);
-		$this->resolvedTemplates[$path] = $type === 'Page' ? $this->backoffice->getPage(intval($page)) : $this->backoffice->getTemplate($type, $page);
-		return $this->resolvedTemplates[$path];
+		return $this->resolvedTemplates[$path] = $this->backoffice->getTemplateByPath($path);
 	}
 
 	/**
 	 * BackOfficeLoader constructor.
 	 *
 	 * @param \BackOffice\Plugin $backoffice
-	 * @param $active_theme
-	 * @param $active_page
 	 */
-	public function __construct(Plugin $backoffice, Theme $active_theme) {
+	public function __construct(Plugin $backoffice) {
 		$this->backoffice = $backoffice;
-		$this->active_theme = $active_theme;
+		$this->active_theme = $this->backoffice->getActiveTheme();
 	}
 
 	/**
@@ -92,11 +74,7 @@ class BackOfficeLoader implements LoaderInterface, ExistsLoaderInterface, Source
 	 */
 	public function getCacheKey( $name )
 	{
-		$template = $this->getTemplate($name);
-		if ($template instanceof Page) {
-			return Text::slug($template->alias());
-		}
-		return Text::slug($template->alias());
+		return Text::slug($this->getTemplate($name)->alias());
 	}
 
 	/**

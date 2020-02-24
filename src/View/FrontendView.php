@@ -40,11 +40,6 @@ class FrontendView extends TwigView
 	protected $backoffice;
 
 	/**
-	 * @var \BackOffice\Model\Entity\Theme
-	 */
-	protected $activeTheme;
-
-	/**
 	 * @var array
 	 */
 	protected $activePage;
@@ -66,7 +61,6 @@ class FrontendView extends TwigView
 	public function initialize()
 	{
 		$this->backoffice = Configure::read('BackOffice');
-		$this->activeTheme = $this->backoffice->getActiveTheme();
 		$this->activePage = $this->backoffice->getActivePage($this->getRequest());
 
 		if ($this->activePage) {
@@ -75,7 +69,7 @@ class FrontendView extends TwigView
 		}
 
 		Configure::write(self::ENV_CONFIG, [
-			'cache' => new BackOfficeCache(CACHE . 'twigView' . DS)
+			'cache' => new BackOfficeCache(CACHE . 'twigView' . DS, $this->backoffice)
 		]);
 
 		parent::initialize();
@@ -91,7 +85,7 @@ class FrontendView extends TwigView
 	 */
 	public function loader(LoaderEvent $event)
 	{
-		$event->result = new BackOfficeLoader($this->backoffice, $this->activeTheme);
+		$event->result = new BackOfficeLoader($this->backoffice);
 	}
 
 	/**

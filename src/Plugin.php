@@ -280,13 +280,11 @@ class Plugin extends BasePlugin
 		return $this->_active_theme = $activeTheme;
 	}
 
-
-
 	/**
 	 * @param $type
 	 * @param $name
 	 *
-	 * @return array|\Cake\Datasource\EntityInterface|null
+	 * @return \BackOffice\Model\Entity\ThemeTemplate
 	 */
 	public function getTemplate($type, $name)
 	{
@@ -294,6 +292,29 @@ class Plugin extends BasePlugin
 		$template = $this->_theme_templates->find()->where([ 'theme_id' => $activeTheme->id, 'type' => $type, 'name' => $name ]);
 		$template->cache(':theme:' . $activeTheme->id . ':template:' . $name, 'bo_shared');
 		return $template->first();
+	}
+
+	/**
+	 * @param $path
+	 *
+	 * @return array
+	 */
+	private function splitTemplatePath($path)
+	{
+		if (strpos($path, '.') === false) $path = 'Content.' . $path;
+		$dotLocation = strpos($path, '.');
+		return [ substr($path, 0, $dotLocation), substr($path,$dotLocation + 1) ];
+	}
+
+	/**
+	 * @param $path
+	 *
+	 * @return \BackOffice\Model\Entity\ThemeTemplate|Page
+	 */
+	public function getTemplateByPath($path)
+	{
+		list($type, $page) = $this->splitTemplatePath($path);
+		return $type === 'Page' ? $this->getPage(intval($page)) : $this->getTemplate($type, $page);
 	}
 
 	/**
