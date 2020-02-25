@@ -290,7 +290,7 @@ class Plugin extends BasePlugin
 	{
 		$activeTheme = $this->getActiveTheme();
 		$template = $this->_theme_templates->find()->where([ 'theme_id' => $activeTheme->id, 'type' => $type, 'name' => $name ]);
-		$template->cache(':theme:' . $activeTheme->id . ':template:' . $name, 'bo_shared');
+		$template->cache('theme:' . $activeTheme->id . ':template:' . $name, 'bo_shared');
 		return $template->first();
 	}
 
