@@ -56,8 +56,8 @@
           <p class="card-text text-muted font-weight-light">You can change page layout and template.</p>
         </div>
         <div class="card-body">
-	        <?= $this->Form->control('layout', [ 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
-          <?= $this->Form->control('template', [ 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
+	        <?= $this->Form->control('layout', [ 'type' => 'select', 'options' => $layouts, 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
+          <?= $this->Form->control('template', [ 'type' => 'select', 'options' => $templates, 'container' => [ 'class' => 'col-12 p-0 mb-3' ] ] ); ?>
         </div>
       </div>
     </div>

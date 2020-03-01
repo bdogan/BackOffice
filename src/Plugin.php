@@ -142,7 +142,9 @@ class Plugin extends BasePlugin
 			'backoffice:auth.login' => [ 'method' => [ 'GET', 'POST' ], 'template' => '/auth/login', 'action' => [ 'controller' => 'Auth', 'action' => 'login', 'plugin' => 'BackOffice' ] ],
 			'backoffice:auth.logout' => [ 'method' => 'GET', 'template' => '/auth/logout', 'action' => [ 'controller' => 'Auth', 'action' => 'logout', 'plugin' => 'BackOffice' ] ],
 			/** BO File Browser */
-			'backoffice:file_browser.index' => [ 'method' => 'GET', 'template' => '/file_browser', 'action' => [ 'controller' => 'FileBrowser', 'action' => 'index', 'plugin' => 'BackOffice' ] ]
+			'backoffice:file_browser.index' => [ 'method' => 'GET', 'template' => '/file_browser', 'action' => [ 'controller' => 'FileBrowser', 'action' => 'index', 'plugin' => 'BackOffice' ] ],
+			/** BO Theme Settings */
+			'backoffice:theme_settings.templates' => [ 'method' => 'GET', 'template' => '/theme/:id', 'action' => [ 'controller' => 'ThemeSettings', 'action' => 'templates', 'plugin' => 'BackOffice' ] ]
 		],
 		'auth' => [
 			'authenticate' => [
@@ -158,11 +160,11 @@ class Plugin extends BasePlugin
 		'menu' => [
 			'_default' => [
 				'main_page' => [ 'title' => 'Dashboard', 'exact' => true, 'icon' => 'home', 'action' => [ '_name' => 'backoffice:dashboard.index' ], 'order' => -2 ],
-				'pages' => [ 'title' => 'Pages', 'icon' => 'library_books', 'action' => [ '_name' => 'backoffice:pages.index' ], 'order' => -1, 'children' => [
+				'pages' => [ 'title' => 'Pages', 'icon' => 'library_books', 'action' => [ '_name' => 'backoffice:pages.index' ], 'order' => 99998, 'children' => [
 					[ 'title' => 'New Page', 'action' => [ '_name' => 'backoffice:pages.create' ] ],
 				] ],
-				'file_browser' => [ 'title' => 'File Browser', 'exact' => true, 'icon' => 'file_copy', 'action' => [ '_name' => 'backoffice:file_browser.index' ], 'order' => 99999 ],
-				'definitions' => [ 'title' => 'Definitions', 'icon' => 'dvr', 'action' => [ '_name' => 'backoffice:definitions.index' ], 'order' => 99999, 'children' => [
+				'file_browser' => [ 'title' => 'File Browser', 'exact' => true, 'icon' => 'file_copy', 'action' => [ '_name' => 'backoffice:file_browser.index' ], 'order' => 100000 ],
+				'definitions' => [ 'title' => 'Definitions', 'icon' => 'dvr', 'action' => [ '_name' => 'backoffice:definitions.index' ], 'order' => 100001, 'children' => [
 
 				] ],
 			],
@@ -199,12 +201,6 @@ class Plugin extends BasePlugin
 			'groups' => [ 'backoffice' ],
 			'fallback' => 'default'
 		] + Configure::read('Redis', []));
-		Cache::setConfig('bo_file', [
-			'className' => FileEngine::class,
-			'duration' => '+999 days',
-			'prefix' => 'bo_',
-			'groups' => [ 'backoffice' ]
-		] + Configure::read('Redis', []));
 
 		// Set config
 		Configure::write('BackOffice', $this);
@@ -216,6 +212,12 @@ class Plugin extends BasePlugin
 
 		// Add twig view plugin
 		$app->addPlugin('WyriHaximus/TwigView', [ 'bootstrap' => true ]);
+
+		// Add menus which depends on variables
+		$activeTheme = $this->getActiveTheme();
+		$this->addMenu('theme_settings', [ 'title' => 'Theme', 'icon' => 'style', 'action' => [ '_name' => 'backoffice:theme_settings.templates', 'id' => $activeTheme->id ], 'order' => 99999, 'children' => [
+			[ 'title' => 'Template Editor', 'action' => [ '_name' => 'backoffice:theme_settings.templates', 'id' => $activeTheme->id ] ]
+		] ]);
 
 		// Fire event
 		$this->dispatchEvent('BackOffice.ready', [ 'config' => $this->getConfig() ]);
@@ -278,6 +280,17 @@ class Plugin extends BasePlugin
 		}
 
 		return $this->_active_theme = $activeTheme;
+	}
+
+	/**
+	 * @param $type
+	 *
+	 * @return \Cake\Datasource\ResultSetInterface
+	 */
+	public function getTemplates($type)
+	{
+		$activeTheme = $this->getActiveTheme();
+		return $this->_theme_templates->find()->where([ 'type' => $type ])->all();
 	}
 
 	/**

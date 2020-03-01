@@ -32,8 +32,9 @@ class PagesTable extends Table
 	public function implementedEvents()
 	{
 		return parent::implementedEvents() + [
-			'Model.beforeSave' => 'beforeSave',
-			'Model.beforeDelete' => 'beforeDelete'
+			'Model.afterSave' => 'afterSave',
+			'Model.beforeDelete' => 'beforeDelete',
+			'Model.afterDelete' => 'afterDelete'
 		];
 	}
 
@@ -52,8 +53,6 @@ class PagesTable extends Table
         $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
-
-        $this->getEventManager()->on('Model.beforeSave', [ $this, 'beforeSave' ]);
     }
 
     /**
@@ -143,23 +142,29 @@ class PagesTable extends Table
 	 * @param \BackOffice\Model\Entity\Page $page
 	 * @param \ArrayObject $options
 	 */
-    public function beforeSave(Event $event, Page $page, \ArrayObject $options)
-	{
-		if (!$page->alias) $page->alias = $page->alias();
-		Cache::delete('pages', 'bo_shared');
-	}
-
-	/**
-	 * @param \Cake\Event\Event $event
-	 * @param \BackOffice\Model\Entity\Page $page
-	 * @param \ArrayObject $options
-	 */
 	public function beforeDelete(Event $event, Page $page, \ArrayObject $options)
 	{
 		if ($page->is_system_default) {
 			$event->stopPropagation();
 			$event->setResult(false);
 		}
+	}
+
+	public function afterSave(Event $event, Page $page)
+	{
+		if (!$page->alias) {
+			$page->alias = $page->alias();
+			$this->save($page, [ 'checkRules' => false, 'atomic' => false ]);
+		}
+		Cache::clearGroup('backoffice', 'bo_shared');
+	}
+
+	/**
+	 * After delete
+	 */
+	public function afterDelete()
+	{
+		Cache::clearGroup('backoffice', 'bo_shared');
 	}
 
 }

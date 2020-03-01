@@ -4,6 +4,7 @@ namespace BackOffice\Controller;
 use BackOffice\Model\Entity\Page;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
 
 /**
  * Pages Controller
@@ -47,6 +48,10 @@ class PagesController extends AppController
 			}
 		}
 
+		// Set layouts & templates
+		$this->set('layouts', $this->BackOffice->getTemplates('layout')->combine('name', 'name'));
+		$this->set('templates', $this->BackOffice->getTemplates('content')->combine('name', 'name'));
+
 		// Set virtual values
 		$page->set('is_published', $this->request->getData('is_published', true));
 
@@ -78,6 +83,10 @@ class PagesController extends AppController
 				return $this->redirect([ 'action' => 'index' ]);
 			}
 		}
+
+		// Set layouts & templates
+		$this->set('layouts', $this->BackOffice->getTemplates('layout')->combine('name', 'name'));
+		$this->set('templates', $this->BackOffice->getTemplates('content')->combine('name', 'name'));
 
 		// Set virtual values
 		$page->set('is_published', $this->request->getData('is_published', !!$page->published_after));
