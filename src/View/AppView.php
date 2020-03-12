@@ -65,40 +65,44 @@ class AppView extends View
     private function loadAssets() {
 
         // JQuery 3.4.1 **
-        $this->Html->script('https://unpkg.com/jquery@3.4.1/dist/jquery.min.js', [ 'block' => 'script' ] );
+        $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js', [ 'block' => 'script' ] );
 
-        // Popper.js 1.15.0 **
-        $this->Html->script('https://unpkg.com/popper.js@1.15.0/dist/umd/popper.min.js', [ 'block' => 'script' ] );
+        // Popper.js 1.16.0 **
+        $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/popper.min.js', [ 'block' => 'script' ] );
 
-        // Bootstrap 4.3.1
-        $this->Html->css('https://unpkg.com/bootstrap@4.3.1/dist/css/bootstrap.min.css', [ 'block' => 'css' ] );
-        $this->Html->script('https://unpkg.com/bootstrap@4.3.1/dist/js/bootstrap.min.js', [ 'block' => 'script' ] );
+        // Bootstrap 4.4.1
+        $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css', [ 'block' => 'css' ] );
+        $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js', [ 'block' => 'script' ] );
 
         // Material icons
         $this->Html->css('https://fonts.googleapis.com/icon?family=Material+Icons+Round', [ 'block' => 'css' ] );
 
 		// Lodash
-	    $this->Html->script('https://unpkg.com/lodash@4.17.15/lodash.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js', [ 'block' => 'script' ] );
 
 	    // Handlebars
-	    $this->Html->script('https://unpkg.com/handlebars@4.4.0/dist/handlebars.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.3/handlebars.min.js', [ 'block' => 'script' ] );
 
 	    // EventEmitter3
-	    $this->Html->script('https://unpkg.com/eventemitter3@latest/umd/eventemitter3.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/eventemitter3/4.0.0/index.min.js', [ 'block' => 'script' ] );
 
 	    // Codemirror
-	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/lib/codemirror.css', [ 'block' => 'css' ] );
-	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/theme/monokai.css', [ 'block' => 'css' ] );
-	    $this->Html->css('https://unpkg.com/codemirror@5.49.2/addon/display/fullscreen.css', [ 'block' => 'css' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/lib/codemirror.js', [ 'block' => 'script' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/htmlmixed/htmlmixed.js', [ 'block' => 'script' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/xml/xml.js', [ 'block' => 'script' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/javascript/javascript.js', [ 'block' => 'script' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/mode/css/css.js', [ 'block' => 'script' ] );
-	    $this->Html->script('https://unpkg.com/codemirror@5.49.2/addon/display/fullscreen.js', [ 'block' => 'script' ] );
+	    $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/codemirror.min.css', [ 'block' => 'css' ] );
+	    $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/theme/monokai.min.css', [ 'block' => 'css' ] );
+	    $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/addon/display/fullscreen.css', [ 'block' => 'css' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/codemirror.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/mode/htmlmixed/htmlmixed.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/mode/xml/xml.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/mode/javascript/javascript.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/mode/css/css.min.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.0/addon/display/fullscreen.min.js', [ 'block' => 'script' ] );
 
 	    // Slugify
-	    $this->Html->script('https://unpkg.com/speakingurl@14.0.1/lib/speakingurl.js', [ 'block' => 'script' ] );
+	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/speakingurl/14.0.1/speakingurl.min.js', [ 'block' => 'script' ] );
+
+	    // Datetime picker
+		$this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css', [ 'block' => 'css' ] );
+		$this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js', [ 'block' => 'script' ]);
 
         // Application assets
         $this->Html->script('BackOffice.lib', [ 'block' => 'script' ]);

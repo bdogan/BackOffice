@@ -20,6 +20,7 @@ class FormHelper extends BaseFormHelper
 			'errorClass' => 'is-invalid',
 			'templates' => [
 				'error' => '<div class="invalid-feedback">{{content}}</div>',
+				'dateWidget' => '<div class="form-inline input-datetime">{{day}}{{year}}{{month}}{{hour}}{{minute}}{{second}}{{meridian}}</div>',
 				'formGroup' => '{{label}}{{before}}{{prefix}}{{input}}{{suffix}}{{after}}',
 				'nestingLabel' => '{{hidden}}{{input}}<label{{attrs}}>{{text}}</label>',
 				'inputContainer' => '<div class="{{class}} {{type}}{{required}}">{{content}}{{info}}</div>',
@@ -44,6 +45,15 @@ class FormHelper extends BaseFormHelper
 			case 'checkbox':
 				$options['labelOptions'] = [ 'class' => 'custom-control-label' ];
 				$options['class'] = 'custom-control-input ' . $options['class'];
+				break;
+			case 'datetime':
+				$fields = [ 'year', 'month', 'day', 'hour', 'minute', 'second', 'meridian' ];
+				foreach ($fields as $field) {
+					$options[$field]['class'] = 'custom-select ' . Hash::get($options, $field . '.class', '');
+				}
+				break;
+			case 'select':
+				$options['class'] = 'custom-select ' . $options['class'];
 				break;
 			default:
 				$options['class'] = 'form-control ' . $options['class'];
