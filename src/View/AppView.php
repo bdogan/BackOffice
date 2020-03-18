@@ -68,7 +68,7 @@ class AppView extends View
         $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js', [ 'block' => 'script' ] );
 
         // Popper.js 1.16.0 **
-        $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/popper.min.js', [ 'block' => 'script' ] );
+        $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js', [ 'block' => 'script' ] );
 
         // Bootstrap 4.4.1
         $this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css', [ 'block' => 'css' ] );
@@ -99,6 +99,9 @@ class AppView extends View
 
 	    // Slugify
 	    $this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/speakingurl/14.0.1/speakingurl.min.js', [ 'block' => 'script' ] );
+
+	    // Moment js
+		$this->Html->script('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js', [ 'block' => 'script' ]);
 
 	    // Datetime picker
 		$this->Html->css('https://cdnjs.cloudflare.com/ajax/libs/eonasdan-bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css', [ 'block' => 'css' ] );

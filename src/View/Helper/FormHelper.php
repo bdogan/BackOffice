@@ -6,9 +6,22 @@ use Cake\View\Helper\FormHelper as BaseFormHelper;
 
 /**
  * Form helper
+ *
+ * @property \BackOffice\View\Helper\PageHelper $Page
  */
 class FormHelper extends BaseFormHelper
 {
+
+	/**
+	 * @var array
+	 */
+	public $helpers = ['Url', 'Html', 'BackOffice.Page'];
+
+	/**
+	 * @var bool
+	 */
+	private $_datetime_init = false;
+
 	/**
 	 * Initialize
 	 *
@@ -20,7 +33,6 @@ class FormHelper extends BaseFormHelper
 			'errorClass' => 'is-invalid',
 			'templates' => [
 				'error' => '<div class="invalid-feedback">{{content}}</div>',
-				'dateWidget' => '<div class="form-inline input-datetime">{{day}}{{year}}{{month}}{{hour}}{{minute}}{{second}}{{meridian}}</div>',
 				'formGroup' => '{{label}}{{before}}{{prefix}}{{input}}{{suffix}}{{after}}',
 				'nestingLabel' => '{{hidden}}{{input}}<label{{attrs}}>{{text}}</label>',
 				'inputContainer' => '<div class="{{class}} {{type}}{{required}}">{{content}}{{info}}</div>',
@@ -46,12 +58,6 @@ class FormHelper extends BaseFormHelper
 				$options['labelOptions'] = [ 'class' => 'custom-control-label' ];
 				$options['class'] = 'custom-control-input ' . $options['class'];
 				break;
-			case 'datetime':
-				$fields = [ 'year', 'month', 'day', 'hour', 'minute', 'second', 'meridian' ];
-				foreach ($fields as $field) {
-					$options[$field]['class'] = 'custom-select ' . Hash::get($options, $field . '.class', '');
-				}
-				break;
 			case 'select':
 				$options['class'] = 'custom-select ' . $options['class'];
 				break;
@@ -59,8 +65,11 @@ class FormHelper extends BaseFormHelper
 				$options['class'] = 'form-control ' . $options['class'];
 		}
 
-		// Return parent call
-		return parent::_getInput( $fieldName, $options );
+		// Generate input
+		$input = parent::_getInput( $fieldName, $options );
+
+		// Return input
+		return $input;
 	}
 
 	/**
@@ -90,7 +99,10 @@ class FormHelper extends BaseFormHelper
 		// Determine container class
 		switch (strtolower($options['options']['type'])) {
 			case 'radio':
-				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-radio' . Hash::get($options, 'options.templateVars.class', '')  ];
+				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-radio ' . Hash::get($options, 'options.templateVars.class', '')  ];
+				break;
+			case 'datetime':
+				$options['options']['templateVars'] = [ 'class' => 'form-group ' . Hash::get($options, 'options.templateVars.class', '')  ];
 				break;
 			case 'checkbox':
 				$options['options']['templateVars'] = [ 'class' => 'custom-control custom-checkbox ' . Hash::get($options, 'options.templateVars.class', '') ];
@@ -150,16 +162,26 @@ class FormHelper extends BaseFormHelper
 	 *
 	 * @return string
 	 */
-	public function dateTime( $fieldName, array $options = [] ) {
-		$options += [
-			'monthNames' => false,
-			'year' => [ 'class' => 'form-control' ],
-			'month' => [ 'class' => 'form-control' ],
-			'day' => [ 'class' => 'form-control' ],
-			'hour' => [ 'class' => 'form-control' ],
-			'minute' => [ 'class' => 'form-control' ],
-		];
-		return parent::dateTime( $fieldName, $options );
+	public function dateTime( $fieldName, array $options = [] )
+	{
+		$options = $this->_initInputField($fieldName, $options);
+
+		$inputField 	= $this->Html->tag('input', null, [ 'type' => 'text', 'class' => 'form-control date-time-input ' . Hash::get($options, 'class'), 'id' => Hash::get($options, 'id', null) ]);
+		$icon 			= $this->Html->div('input-group-append', $this->Html->tag('span', $this->Page->icon('calendar_today', 'md-16'), [ 'class' => 'input-group-text' ]));
+
+		// Load javascript
+		if (!$this->_datetime_init) {
+			$this->Html->scriptStart(['block' => true]);
+			echo '
+				$(function () {
+                	$(".date-time-input").datetimepicker();
+            	});
+			';
+			$this->Html->scriptEnd();
+		}
+
+		// Return input
+		return $this->Html->div('input-group date', $inputField . $icon);
 	}
 
 }

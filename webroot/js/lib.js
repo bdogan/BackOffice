@@ -63,7 +63,7 @@
   };
 
   // Extends from EventEmitter
-  Widget.prototype = new EventEmitter3();
+  Widget.prototype = new EventEmitter();
 
   // Attach widget to given selector
   Widget.prototype.renderTemplate = function(context, name) {
