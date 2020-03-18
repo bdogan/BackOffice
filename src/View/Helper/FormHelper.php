@@ -178,6 +178,7 @@ class FormHelper extends BaseFormHelper
             	});
 			';
 			$this->Html->scriptEnd();
+			$this->_datetime_init = true;
 		}
 
 		// Return input
