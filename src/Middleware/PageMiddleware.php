@@ -60,52 +60,8 @@ class PageMiddleware
 		    // Set into request
 	        $request = $request->withParam('page', $activePage);
 
-		    // Listen events
-	        //EventManager::instance()->on('Controller.beforeRender', [ $this, 'onControllerBeforeRender' ]);
-		    //EventManager::instance()->on('View.beforeRender', [ $this, 'onViewBeforeRender' ]);
 	    }
     	return $next($request, $response);
-    }
-
-	/**
-	 * Raw renderer for string templates
-	 *
-	 * @param $view
-	 *
-	 * @return \Closure
-	 */
-	private function rawRenderer($view)
-	{
-		if (!$this->_rawRenderer) {
-			// Create Renderer
-			$this->_rawRenderer = \Closure::bind(function ($template, $data = []) {
-				extract($data);
-
-				ob_start();
-
-				eval(' ?>' . $template . '<?php ');
-
-				return ob_get_clean();
-			}, $view, get_class($view));
-		}
-		return $this->_rawRenderer;
-	}
-
-	/**
-	 * View Before Render
-	 *
-	 * @param \Cake\Event\Event $event
-	 */
-    public function onViewBeforeRender( Event $event )
-    {
-    	/** @var \Cake\View\View $view */
-    	$view = $event->subject;
-
-    	// Get page
-    	$page = $view->getRequest()->getParam('page');
-
-    	// Set page block
-	    $view->Blocks->set('page', $this->rawRenderer($view)(Hash::get($page, 'data.body'), $view->viewVars));
     }
 
 	/**
